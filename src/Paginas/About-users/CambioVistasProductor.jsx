@@ -1,11 +1,13 @@
 import React, { useState } from 'react';
-import Menu from '../Componentes/Menu';
+import Menu from '@/Componentes/Menu';
 import './Perfiles.css';
 
 // Importas los JSX que ya tienes en Paginas/
 import PerfilProductor from './Perfil';
+import SolicitudInspeccion from '@/Paginas/Inspecciones/SolicitudInspeccion';
+import VisualizarTerreno from '@/Paginas/GestionTerrenos/VisualizarTerreno';
 // Cuando los vayas creando los importas aquí:
-import SolicidudesUsuarios from './SolicitudesUsuarios';
+// import LugaresProduccion from './LugaresProduccion';
 // import SolicitarInspeccion from './SolicitarInspeccion';
 // import InspeccionesPendientes from './InspeccionesPendientes';
 // import InformesProduccion from './InformesProduccion';
@@ -13,7 +15,8 @@ import SolicidudesUsuarios from './SolicitudesUsuarios';
 
 const SECCIONES = {
     perfil:     <PerfilProductor />,
-    solicitudesUsuarios:    <SolicidudesUsuarios />,
+    lugares:    <VisualizarTerreno tipo = "lugares" />,
+    solicitar:  <SolicitudInspeccion />,
     // pendientes: <InspeccionesPendientes />,
     // informes:   <InformesProduccion />,
     // resultados: <ResultadosInspecciones />,
@@ -32,7 +35,7 @@ function CambioVistasProductor() {
                 alternarSidebar={alternarSidebar}
                 seccionActiva={seccionActiva}
                 setSeccionActiva={setSeccionActiva}
-                tipoUsuario="funcionario"
+                tipoUsuario="productor"
             />
 
             <main className={`contenido-principal ${isSidebarOpen ? '' : 'expandido'}`}>

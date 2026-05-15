@@ -41,12 +41,7 @@ input {
     margin-bottom: 20px; 
 }
 
-.contenedor-botones {
-    display: flex;
-    gap: 15px;
-}
-
-.boton-registrar, .boton-cancelar {
+.boton-registrar {
     background: linear-gradient(to bottom, var(--verde-boton), var(--verde-ica));
     color: white;
     padding: 12px;
@@ -57,4 +52,58 @@ input {
     font-weight: bold;
     width: 100%;
     margin-top: 10px;
+}
+
+.grupo-opciones {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-bottom: 20px;
+}
+
+.opcion-radio {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 14px;
+    color: #333;
+    cursor: pointer;
+    margin-bottom: 0;
+}
+
+.opcion-radio input[type="radio"] {
+    width: auto;
+    margin-bottom: 0;
+    padding: 0;
+    accent-color: var(--verde-ica);
+}
+
+textarea {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #8e949a;
+    border-radius: 2px;
+    box-sizing: border-box;
+    margin-bottom: 20px;
+    font-family: inherit;
+    font-size: 14px;
+    resize: vertical;
+}
+
+.texto-cargando {
+    font-size: 13px;
+    color: #888;
+    margin-bottom: 20px;
+}
+
+select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #8e949a;
+    border-radius: 2px;
+    box-sizing: border-box;
+    margin-bottom: 20px;
+    font-size: 14px;
+    background-color: white;
+    cursor: pointer;
 }

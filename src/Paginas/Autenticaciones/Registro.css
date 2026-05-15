@@ -1,0 +1,23 @@
+/* ==================== PÁGINA DE REGISTRO ==================== */
+.contenedor-pagina-registro {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+  overflow: hidden;
+
+  background-image: url("@/assets/principales/fondo.webp");
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}
+
+.contenedor-pagina-registro::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.2);
+  z-index: 0;
+}

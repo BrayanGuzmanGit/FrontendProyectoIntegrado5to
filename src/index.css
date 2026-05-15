@@ -1,15 +1,248 @@
-:root {
-  --verde-ica: #1a5e30;
-  --verde-boton: #238b45;
+:root { /*declaración de variables globales*/
+  /*Colores*/
+  --verde-ica: #1a5e30; /*títulos (encabezados)*/
+  --verde-boton: #238b45; /*botones*/
+  --verde-hover-suave: #1d743a; /*hover de botones*/
+  --verde-hover-fuerte: #1a5e30; /*hover más fuerte para botones*/
+
+
+  --color-texto: #161616; /*texto general*/
+  --texto-secundario: #555; /*texto secundario*/
+  --texto-disabled: #777; /*texto de campos deshabilitados*/
+
+  --color-danger: #d9534f; /*color de error*/
+  --hover-danger: #c42121; /*hover para elementos de error*/
+  --color-warning: rgb(204, 167, 0); /*color de advertencia*/
+
+  --color-borde: #ccc; /*bordes de campos y tarjetas*/
+  --card-bg: rgba(255, 255, 255, .95); /*fondo de tarjetas y formularios*/
+  --fondo-disabled: #e9ecef; /*fondo de campos deshabilitados*/
+
+  --hover-light: rgba(0,0,0,0.05); /*hover más suave*/
+  --hover-medium: rgba(0,0,0,0.08); /*hover más fuerte*/
+  /*bordes*/
+  --radius-sm: 8px; /*bordes pequeños (inputs, botones)*/
+  --radius: 16px; /*bordes estándar (tarjetas)*/
+
+
+  --shadow: 0 4px 15px rgba(0,0,0,.2); /*sombra estándar*/
+
+  --transition: 0.3s ease; /*transiciones estándar*/
+
+  /* tamaños de letra*/
+  --text-sm: 14px; /*texto pequeño*/
+  --text-md: 16px; /*texto medio*/
+  --text-lg: 20px; /*texto grande*/
+  --text-xl: 28px; /*texto extra grande*/
+
 }
 
 body {
-    margin: 0;
-    padding: 0;
+    margin: 0; /*eliminar márgenes por defecto*/
+    padding: 0; /*eliminar márgenes por defecto*/
     font-family: Arial, sans-serif;
     min-height: 100vh;
-    background-image: url("./assets/imagenes/fondo.png");
-    background-size: cover;
-    background-position: center;
-    background-attachment: fixed;
+    background-color: #f4f6f8;
+}
+
+.card { /* clase base para tarjetas y formularios */
+  background-color: var(--card-bg);
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 24px;
+  box-sizing: border-box;
+  min-width: 500px;
+  max-width: 900px;
+}
+.card-title { /* título de tarjetas y formularios */
+  font-size: var(--text-xl);
+  color: var(--verde-ica);
+  margin-top: 0;
+  margin-bottom: 16px;
+  text-align: center;
+}
+
+/* ── Columna central que agrupa logo + tarjeta ──────────────────────────────── */
+.contenedor-logo-card {
+  position: relative;
+  z-index: 1;
+  text-align: center;
+  width: 100%;
+  max-width: 500px;
+}
+
+.label-base { /* clase base para etiquetas de campos */
+  font-size: var(--text-sm);
+  color: var(--color-texto);
+  margin-bottom: 6px;
+  display: block;
+  text-align: left;
+  font-weight: 600;
+}
+
+.input-base { /* clase base para inputs y selects */
+  width: 100%;
+  height: 36px;
+  padding: 0 10px;
+  border: 1px solid var(--color-borde);
+  border-radius: var(--radius-sm);
+  font-size: var(--text-sm);
+  color: var(--color-texto);
+  transition: var(--transition);
+  box-sizing: border-box;
+}
+
+.input-base:focus { /* estilos para inputs enfocados */
+  outline: none;
+  border-color: var(--verde-boton);
+}
+
+.form-group {/* clase base para grupos de campos */
+  width: 100%;
+  margin-bottom: 2px;
+}
+
+.form-group .label-base { /* margen específico para etiquetas dentro de form-group */
+  margin-bottom: 6px;
+}
+
+.form-group .input-base { /* ancho completo para inputs dentro de form-group */
+  width: 100%;
+}
+
+/*manejar espacios entre botones (más de uno)*/
+.contenedor-botones {
+    display: flex;
+    gap: 15px;
+}
+
+/* clase base para botones principales */
+.btn-primary {
+  background: var(--verde-boton);
+  color: white;
+  border: none;
+  padding: 12px 40px;
+  border-radius: var(--radius-sm);
+  font-size: var(--text-md);
+  font-weight: bold;
+  cursor: pointer;
+  width: 100%;
+  transition: transform 0.1s, opacity var(--transition);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.btn-primary:hover:not(:disabled) {
+  opacity: 0.9;
+  transform: translateY(-1px);
+  background: var(--verde-ica);
+}
+
+.btn-primary:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.btn-primary:disabled {
+  background: var(--texto-disabled);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/* clase base para botones secundarios */
+.btn-secundary { 
+  background: var(--verde-boton);
+  color: white;
+  border: none;
+  padding: 10px 25px;
+  border-radius: var(--radius-sm);
+  font-size: var(--text-sm);
+  font-weight: bold;
+  cursor: pointer;
+  width: 100%;
+  transition: transform 0.1s, opacity var(--transition);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+/* variante de botón secundario para acciones de cancelación */
+.btn-secundary.cancel {
+  background: var(--color-danger);
+}
+
+.btn-secundary.cancel:hover:not(:disabled) {
+  background: var(--hover-danger);
+}
+
+.btn-secundary:hover:not(:disabled) {
+  opacity: 0.9;
+  transform: translateY(-1px);
+  background: var(--verde-ica);
+}
+
+.btn-secundary:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.btn-secundary:disabled {
+  background: var(--texto-disabled);
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+
+/*Estilo para contenedores de contraseña*/
+.contenedor-contrasena {
+  position: relative;
+  width: 100%;
+  height: 36px;
+  margin-bottom: 20px;
+}
+
+/* Botón ojo */
+.boton-visibilidad {
+  color: var(--texto-secundario);
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  padding: 4px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* ── enlace cambio pantalla registro y login */
+.texto-registro-login {
+  font-size: var(--text-sm);
+  margin-top: 20px;
+  color: var(--texto-secundario);
+}
+
+.texto-registro-login a {
+  color: var(--verde-boton);
+  text-decoration: none;
+  font-weight: bold;
+  transition: color var(--transition);
+}
+
+.texto-registro-login a:hover {
+  color: var(--verde-ica);
+  text-decoration: underline;
+}
+
+/*Responsive*/
+@media (max-width: 600px) {
+  .contenedor-logo-card {
+    max-width: 100%;
+  }
+
+  .contenedor-contrasena input {
+    width: 100%;
+    height: 44px; /* Mayor área de toque */
+    font-size: var(--text-md);
+  }
+
+  .contenedor-contrasena {
+    width: 100%;
+    height: 44px;
+  }
 }

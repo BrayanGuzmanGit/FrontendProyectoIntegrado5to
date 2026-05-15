@@ -1,11 +1,11 @@
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 // Importamos los componentes (Aquí usamos MAYÚSCULAS porque tus archivos y carpeta empiezan con Mayúscula)
-import Login from './Paginas/Login';
-import Registro from './Paginas/Registro';
-import CambioVistasProductor from './Paginas/CambioVistasProductor';
-import CambioVistasFuncionario from './Paginas/CambioVistasFuncionario';
-import CambioVistasPropietario from './Paginas/CambioVistasPropietario';
-import CambioVistasTecnico from './Paginas/CambioVistasTecnico';
+import Login from './Paginas/Autenticaciones/Login';
+import Registro from './Paginas/Autenticaciones/Registro';
+import CambioVistasProductor from './Paginas/About-users/CambioVistasProductor';
+import CambioVistasFuncionario from './Paginas/About-users/CambioVistasFuncionario';
+import CambioVistasPropietario from './Paginas/About-users/CambioVistasPropietario';
+import CambioVistasTecnico from './Paginas/About-users/CambioVistasTecnico';
 
 function App() {
   return (

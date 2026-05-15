@@ -1,6 +1,7 @@
 import React from 'react';
-import logo from '../assets/Imagenes/logo.png';
+import logo from '@/assets/principales/logo.webp';
 import './Menu.css';
+import { User, Sprout, Leaf, Mail, CalendarDays, ClipboardCheck,LogOut, ArrowLeft, ArrowRight } from 'lucide-react';
 
 function Menu({ 
     isSidebarOpen, 
@@ -19,33 +20,33 @@ function Menu({
 
     const menuOpciones = {
         productor: [
-            { id: "perfil", label: "Perfil" },
-            { id: "lugares", label: "Lugares de producción" },
-            { id: "solicitar", label: "Solicitar inspección" },
-            { id: "pendientes", label: "Inspecciones pendientes" },
-            { id: "informes", label: "Informes de producción" },
-            { id: "resultados", label: "Resultados Inspecciones" },
+            { id: "perfil", label: "Perfil", icono: User},
+            { id: "lugares", label: "Lugares de producción", icono: Sprout },
+            { id: "solicitar", label: "Solicitar inspección", icono: Mail },
+            { id: "pendientes", label: "Inspecciones pendientes", icono:CalendarDays },
+            { id: "informes", label: "Informes de producción", icono: ClipboardCheck },
+            { id: "resultados", label: "Resultados Inspecciones", icono: ClipboardCheck },
         ],
         tecnico: [
-            { id: "perfil", label: "Perfil" },
-            { id: "pendientes", label: "Inspecciones pendientes" },
-            { id: "plagas", label: "Plagas" },
-            { id: "plantas", label: "Plantas" },
-            { id: "predios", label: "Predios" },
-            { id: "lugares", label: "Lugares de producción" },
+            { id: "perfil", label: "Perfil", icono: User },
+            { id: "pendientes", label: "Inspecciones pendientes", icono: CalendarDays },
+            { id: "plagas", label: "Plagas", icono: Leaf },
+            { id: "plantas", label: "Plantas", icono: Sprout },
+            { id: "predios", label: "Predios", icono: Leaf },
+            { id: "lugares", label: "Lugares de producción", icono: Sprout },
         ],
         funcionario: [
-            { id: "perfil", label: "Perfil" },
-            { id: "solicitudesUsuarios", label: "Solicitudes usuarios" },
-            { id: "solicitudesInspeccion", label: "Solicitudes inspección" },
-            { id: "lugares", label: "Lugares de producción" },
-            { id: "predios", label: "Predios" },
-            { id: "usuarios", label: "Usuarios" },
-            { id: "informes", label: "Informes inspecciones" },
+            { id: "perfil", label: "Perfil", icono: User },
+            { id: "solicitudesUsuarios", label: "Solicitudes usuarios", icono: Mail },
+            { id: "solicitudesInspeccion", label: "Solicitudes inspección", icono: Mail },
+            { id: "lugares", label: "Lugares de producción", icono: Sprout },
+            { id: "predios", label: "Predios", icono: Leaf },
+            { id: "usuarios", label: "Usuarios", icono: User },
+            { id: "informes", label: "Informes de inspecciones", icono: ClipboardCheck },
         ],
         propietario: [
-            { id: "perfil", label: "Perfil" },
-            { id: "predios", label: "Predios" },
+            { id: "perfil", label: "Perfil", icono: User },
+            { id: "predios", label: "Predios", icono: Leaf },
         ]
     };
 
@@ -57,7 +58,7 @@ function Menu({
                 className="boton-toggle-sidebar"
                 onClick={alternarSidebar}
             >
-                {isSidebarOpen ? '◀' : '▶'}
+                {isSidebarOpen ? <ArrowLeft size={18} /> : <ArrowRight size={18} />}
             </div>
 
             <div className="contenedor-logo">
@@ -65,18 +66,24 @@ function Menu({
             </div>
 
             <nav className="navegacion-perfil">
-                {opciones.map((opcion) => (
-                    <button
-                        key={opcion.id}
-                        className={`enlace-perfil ${seccionActiva === opcion.id ? 'activo' : ''}`}
-                        onClick={() => setSeccionActiva(opcion.id)}
-                    >
-                        {opcion.label}
-                    </button>
-                ))}
+                {opciones.map((opcion) => {
+                    const Icono = opcion.icono;
+
+                    return (
+                        <button
+                            key={opcion.id}
+                            className={`opcion ${seccionActiva === opcion.id ? 'activo' : ''}`}
+                            onClick={() => setSeccionActiva(opcion.id)}
+                        >
+                            {Icono && <Icono size={18} />}
+                            <span>{opcion.label}</span>
+                        </button>
+                    );
+                })}
             </nav>
 
             <button onClick={cerrarSesion} className="boton-cerrar-sesion">
+                <LogOut size={18} />
                 Cerrar Sesión
             </button>
         </aside>

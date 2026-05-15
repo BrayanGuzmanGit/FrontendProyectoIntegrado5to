@@ -1,0 +1,53 @@
+/* ─ centra la tarjeta vertical y horizontalmente─── */
+.contenedor-pagina-login {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  padding: 20px;
+  overflow: hidden;
+
+  background-image: url("@/assets/principales/fondo.webp");
+  background-size: cover;
+  background-position: center;
+  background-attachment: fixed;
+}
+
+.contenedor-pagina-login::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0,0,0,0.2);
+  z-index: 0;
+}
+
+
+
+/* ── Bloque del logo institucional ─────────────────────────────────────────── */
+.encabezado-logo {
+  margin-bottom: 20px;
+}
+
+.logo-principal {
+  max-width: 250px;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+ 
+}
+
+/* ── Mensaje de error ───────────────────────────────────────────────────────── */
+.mensaje-error {
+  color: var(--color-danger);
+  font-size: 13px;
+  margin-bottom: 12px;
+  text-align: left;
+  font-weight: 500;
+}
+
+/* ── Sección inferior y Botón de ingreso ────────────────────────────────────── */
+.pie-formulario {
+  margin-top: 8px;
+}
+

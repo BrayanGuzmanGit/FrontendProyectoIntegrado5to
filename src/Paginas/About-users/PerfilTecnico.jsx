@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from 'react';
-import fotoDefecto from '../assets/Imagenes/Foto defecto.webp';
+import fotoDefecto from '@/assets/principales/perfil.webp';
+import BASE_URL from '@/services/api-entidades';
 import './Perfiles.css';
+import {Eye, EyeOff} from 'lucide-react';
 
-const BASE_URL = 'http://localhost:3001/api';
 
 function PerfilTecnico() {
 
@@ -107,19 +108,20 @@ function PerfilTecnico() {
     return (
         <div className="contenedor-pantalla-perfil">
             <main className="contenido-principal">
-                <section className="tarjeta-perfil">
-                    <h2 className="titulo-perfil">Información Personal</h2>
+                <section className="card">
+                    <h2 className="card-title">Información Personal</h2>
 
                     <div className="contenedor-avatar">
                         <img src={fotoDefecto} alt="Perfil" className="imagen-perfil" />
                     </div>
 
-                    <form className="formulario-perfil">
+                    <form >{/* falta onSubmit={guardarCambios} */}
 
                         {campos.map((item) => (
-                            <div className="grupo-campo" key={item.name}>
-                                <label>{item.label}</label>
+                            <div className="form-group" key={item.name}>
+                                <label className="label-base">{item.label}</label>
                                 <input
+                                    className='input-base'
                                     type="text"
                                     name={item.name}
                                     value={item.val}
@@ -131,10 +133,10 @@ function PerfilTecnico() {
 
                         {/* ── Campo Departamento (solo visible al editar) ───── */}
                         {isEditing && (
-                            <div className="grupo-campo">
-                                <label>Departamento:</label>
+                            <div className="form-group">
+                                <label className="label-base">Departamento:</label>
                                 <select
-                                    className="select-perfil"
+                                    className="input-base"
                                     value={departamentoSeleccionado}
                                     onChange={handleDepartamentoChange}
                                 >
@@ -149,11 +151,11 @@ function PerfilTecnico() {
                         )}
 
                         {/* ── Campo Municipio ───────────────────────────────── */}
-                        <div className="grupo-campo">
-                            <label>Municipio:</label>
+                        <div className="form-group">
+                            <label className="label-base">Municipio:</label>
                             {isEditing ? (
                                 <select
-                                    className="select-perfil"
+                                    className="input-base"
                                     value={municipioSeleccionado}
                                     onChange={(e) => setMunicipioSeleccionado(e.target.value)}
                                     disabled={!departamentoSeleccionado}
@@ -170,15 +172,17 @@ function PerfilTecnico() {
                                     type="text"
                                     value={nombreMunicipioActual}
                                     disabled
+                                    className='input-base'
                                 />
                             )}
                         </div>
 
                         {/* ── Campo Contraseña ─────────────────────────────── */}
-                        <div className="grupo-campo">
-                            <label>Contraseña:</label>
-                            <div className="contenedor-contrasena-perfil">
+                        <div className="form-group">
+                            <label className="label-base">Contraseña:</label>
+                            <div className="contenedor-contrasena">
                                 <input
+                                    className='input-base'
                                     type={mostrarContrasena ? 'text' : 'password'}
                                     name="clave"
                                     value={formData.clave}
@@ -186,23 +190,12 @@ function PerfilTecnico() {
                                     disabled={!isEditing}
                                 />
                                 <span
-                                    className="boton-visibilidad-perfil"
+                                    className="boton-visibilidad"
                                     onClick={alternarContrasena}
                                     role="button"
                                     aria-label={mostrarContrasena ? 'Ocultar contraseña' : 'Mostrar contraseña'}
                                 >
-                                    {mostrarContrasena ? (
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                            <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/>
-                                            <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>
-                                            <line x1="1" y1="1" x2="23" y2="23"/>
-                                        </svg>
-                                    ) : (
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                                            <circle cx="12" cy="12" r="3"/>
-                                        </svg>
-                                    )}
+                                    {mostrarContrasena ? <EyeOff size={18} /> : <Eye size={18} />}
                                 </span>
                             </div>
                         </div>
@@ -210,7 +203,7 @@ function PerfilTecnico() {
                         <div className="contenedor-botones">
                             <button
                                 type="button"
-                                className="boton-editar"
+                                className=" btn-secundary"
                                 onClick={() => setIsEditing(prev => !prev)}
                             >
                                 {isEditing ? 'Cancelar' : 'Editar perfil'}
@@ -218,7 +211,7 @@ function PerfilTecnico() {
 
                             <button
                                 type="submit"
-                                className={`boton-guardar ${isEditing ? 'activo' : ''}`}
+                                className={`btn-secundary ${isEditing ? 'activo' : ''}`}
                                 disabled={!isEditing}
                             >
                                 Guardar cambios

@@ -1,0 +1,48 @@
+/* ==================== CONTENEDOR PRINCIPAL ==================== */
+.contenedor-pantalla-perfil {
+    display: flex;
+    width: 100%;
+    min-height: 100vh;
+    position: relative;
+    justify-content: center;
+}
+
+/* ==================== CONTENIDO PRINCIPAL ==================== */
+.contenido-principal {
+    flex: 1;
+    background: transparent;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 40px 0;
+    transition: all 0.3s ease;
+    z-index: 1;
+    text-align: center;
+}
+
+
+/* Avatar */
+.contenedor-avatar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.imagen-perfil {
+    width: 80px;
+    height: 80px;
+    border-radius: 50%;
+    border: 6px solid var(--verde-ica);
+    object-fit: cover;
+    margin-bottom: 15px;
+    background: white;
+}
+
+.form-group input:disabled { 
+    background: #e9ecef; 
+    color: var(--texto-disabled); 
+}
+
+
+
+

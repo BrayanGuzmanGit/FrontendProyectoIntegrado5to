@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import logo from '../assets/imagenes/logo.png';
+import logo from '@/assets/principales/logo-principal.webp';
+import BASE_URL from '@/services/api-entidades';
 import './Login.css';
+import {Eye, EyeOff} from 'lucide-react';
 
 function Login() {
 
@@ -16,7 +18,7 @@ function Login() {
 
   // ─── Estado del formulario ──────────────────────────────────────────────────
   // Cada campo del formulario tiene su propio estado controlado.
-  const [tipoUsuario, setTipoUsuario] = useState('productor');
+  const [tipoUsuario, setTipoUsuario] = useState('Productor');
   const [usuario, setUsuario]         = useState('');
   const [contrasena, setContrasena]   = useState('');
 
@@ -33,8 +35,6 @@ function Login() {
   const alternarContrasena = () => {
     setMostrarContrasena(prev => !prev);
   };
-
-  const BASE_URL = 'http://localhost:3001/api'; // 🔧 Reemplaza con tu URL real
 
 
   // ─── Manejador del envío del formulario ────────────────────────────────────
@@ -88,10 +88,10 @@ function Login() {
     // ── Redirigir según el tipo de usuario seleccionado en el formulario ──
     // Puedes también usar datos.data.user.rol si el backend lo determina
     const rutas = {
-      productor:   '/menu-productor',
-      propietario: '/menu-propietario',
+      Productor:   '/menu-productor',
+      Propietario: '/menu-propietario',
       Tecnico:     '/menu-tecnico',
-      funcionario: '/menu-funcionario',
+      Funcionario: '/menu-funcionario',
     };
     navigate(rutas[tipoUsuario] ?? '/menu-funcionario');
 
@@ -105,7 +105,7 @@ function Login() {
   // ─── Render ─────────────────────────────────────────────────────────────────
   return (
     <div className="contenedor-pagina-login">
-      <div className="contenedor-login">
+      <div className="contenedor-logo-card">
 
         {/* Logo institucional */}
         <div className="encabezado-logo">
@@ -113,8 +113,8 @@ function Login() {
         </div>
 
         {/* Tarjeta del formulario */}
-        <div className="tarjeta-login">
-          <h2>Iniciar Sesión</h2>
+        <div className="card">
+          <h2 className="card-title">Iniciar Sesión</h2>
 
           {/*
            * onSubmit apunta al manejador asíncrono que llama al backend.
@@ -124,9 +124,10 @@ function Login() {
           <form onSubmit={manejarEnvio} noValidate>
 
             {/* ── Campo: Tipo de usuario ────────────────────────────────── */}
-            <div className="grupo-campo">
-              <label htmlFor="tipo-usuario">Tipo de usuario:</label>
+            <div className="form-group">
+              <label className="label-base" htmlFor="tipo-usuario">Tipo de usuario:</label>
               <select
+                className="input-base"
                 id="tipo-usuario"
                 name="tipo-usuario"
                 value={tipoUsuario}
@@ -140,9 +141,10 @@ function Login() {
             </div>
 
             {/* ── Campo: Nombre de usuario ──────────────────────────────── */}
-            <div className="grupo-campo">
-              <label htmlFor="usuario">Nombre usuario:</label>
+            <div className="form-group">
+              <label className="label-base" htmlFor="usuario">Correo electrónico:</label>
               <input
+              className="input-base"
                 type="text"
                 id="usuario"
                 name="usuario"
@@ -153,10 +155,11 @@ function Login() {
             </div>
 
             {/* ── Campo: Contraseña con botón de visibilidad ────────────── */}
-            <div className="grupo-campo">
-              <label htmlFor="contrasena">Contraseña:</label>
+            <div className="form-group">
+              <label className="label-base" htmlFor="contrasena">Contraseña:</label>
               <div className="contenedor-contrasena">
                 <input
+                 className="input-base"
                   type={mostrarContrasena ? 'text' : 'password'}
                   id="contrasena"
                   name="contrasena"
@@ -171,22 +174,7 @@ function Login() {
                     role="button"
                     aria-label={mostrarContrasena ? 'Ocultar contraseña' : 'Mostrar contraseña'}
                     >
-                    {mostrarContrasena ? (
-                        /* Ojo tachado */
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/>
-                        <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>
-                        <line x1="1" y1="1" x2="23" y2="23"/>
-                        </svg>
-                    ) : (
-                        /* Ojo abierto */
-                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24"
-                        fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                        <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
-                        <circle cx="12" cy="12" r="3"/>
-                        </svg>
-                    )}
+                    {mostrarContrasena ? <EyeOff size={18} /> : <Eye size={18} />}
                 </span>
               </div>
             </div>
@@ -206,13 +194,13 @@ function Login() {
                */}
               <button
                 type="submit"
-                className="boton-ingresar"
+                className="btn-primary"
                 disabled={cargando}
               >
                 {cargando ? 'Ingresando...' : 'Iniciar Sesión'}
               </button>
 
-              <p className="texto-registro">
+              <p className="texto-registro-login">
                 ¿Aún no tienes cuenta?{' '}
                 <Link to="/registro">Crear una cuenta</Link>
               </p>

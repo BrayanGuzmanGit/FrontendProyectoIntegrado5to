@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
+import BASE_URL from '@/services/api-entidades';
 import './SolicitudesUsuarios.css';
+
 
 /**
  * Componente para visualizar y gestionar usuarios.
@@ -25,6 +27,7 @@ function UsuariosFuncionario() {
 
     // llamar a la función obtenerUsuarios después de que el componente se carga en la pantalla
     useEffect(() => {
+        document.title = "Solicitudes acceso";
         obtenerUsuarios();
     }, []);
 
@@ -34,7 +37,7 @@ function UsuariosFuncionario() {
         try {
             setLoading(true);
 
-           const response = await fetch('http://localhost:3001/api/users/pending', {
+           const response = await fetch(`${BASE_URL}/users/pending`, {
                 method: 'GET',
                 headers: {
                     'Authorization': 'Bearer ' + token
@@ -58,22 +61,6 @@ function UsuariosFuncionario() {
             setLoading(false);
         }
     };
-
-    // async function fetchPendingUsers() {
-    //   if (!JWT_TOKEN) return alert('Inicia sesión como Admin primero!');
-    //   try {
-    //     const res = await fetch('http://localhost:5000/api/usuarios', {
-    //       method: 'GET',
-    //       headers: { 'Authorization': 'Bearer ' + JWT_TOKEN }
-    //     });
-    //     const data = await res.json();
-    //     console.log(data);
-
-    //     document.getElementById('pendientes-res').innerText = JSON.stringify(data, null, 2);
-    //   } catch (err) {
-    //     document.getElementById('pendientes-res').innerText = err.message;
-    //   }
-    // }
 
 
     // función para filtrar usuarios por rol y estado
@@ -126,7 +113,7 @@ function UsuariosFuncionario() {
             console.log('Enviando:', JSON.stringify(payload));
             
             // parte del backend para actualizar el estado del usuario en la base de datos
-            const response = await fetch(`http://localhost:3001/api/users/${cc}/status`, {
+            const response = await fetch(`${BASE_URL}/users/${cc}/status`, {
                 method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
@@ -169,13 +156,6 @@ function UsuariosFuncionario() {
                     <option value="propietario">Propietario</option>
                 </select>
 
-                {/* Filtro por estado */}
-                <select onChange={(e) => setFiltroEstado(e.target.value)}>
-                    <option value="">Todos los estados</option>
-                    <option value="Pendiente">Pendiente</option>
-                    <option value="Activo">Activo</option>
-                    <option value="Eliminado">Eliminado</option>
-                </select>
 
             </div>
 

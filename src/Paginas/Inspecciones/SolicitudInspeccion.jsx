@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import BASE_URL from '@/services/api-entidades';
 import './SolicitudInspeccion.css';
 
 function RegistroLugarP() {
@@ -15,7 +16,7 @@ function RegistroLugarP() {
         // Carga los lugares desde el backend
         const fetchLugares = async () => {
             try {
-                const response = await fetch('http://localhost:5000/api/lugares');
+                const response = await fetch(`${BASE_URL}/lugares`);
                 const data = await response.json();
                 setLugares(data);
             } catch (error) {
@@ -37,7 +38,7 @@ function RegistroLugarP() {
         };
 
         try {
-            const response = await fetch('http://localhost:5000/api/registro', {
+            const response = await fetch(`${BASE_URL}/registro`, {
                 method: 'POST',
                 headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData),
