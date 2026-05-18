@@ -4,7 +4,7 @@ import BASE_URL from '@/services/api-entidades';
 import ListaTerrenos from './ListarTerrenos';
 import FormularioTerreno from './FormulariosTerrenos';
 import PrediosAsociados from './PrediosAsociados';
-import LotesActuales from './LotesActuales';
+import LotesActuales from './lotesActuales';
 
 // Componente principal que maneja la gestión de lugares de producción, lotes y predios
 // Recibe 'tipo' como prop para determinar qué tipo de entidad mostrar
