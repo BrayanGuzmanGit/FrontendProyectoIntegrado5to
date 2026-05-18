@@ -1,0 +1,3 @@
+const BASE_URL_INSPECTIONS = import.meta.env.VITE_API_URL_INSPECCIONES;
+
+export default BASE_URL_INSPECTIONS;

@@ -12,18 +12,20 @@ function FormularioTerreno({ tipo, onCancelar, onExito, modoEdicion = false, ite
     const [municipios, setMunicipios] = useState([]); // Lista de todos los municipios
     const [departamentoSeleccionado, setDepartamentoSeleccionado] = useState('');
     const [municipioSeleccionado, setMunicipioSeleccionado] = useState('');
+    const [cultivos, setCultivos] = useState([]);
+    const [cultivoSeleccionado, setCultivoSeleccionado] = useState('');
 
     // ═══════════════════════════════════════════════════════════════
     // ESTADO PARA EL FORMULARIO
     // ═══════════════════════════════════════════════════════════════
     // Inicializa el formulario con datos del item a editar, si corresponde.
     const [datosFormulario, setDatosFormulario] = useState(
-        modoEdicion && itemEditar ? { nombre: itemEditar.nombre } : {}
+        modoEdicion && itemEditar ? { numero_registro: itemEditar.numero_registro } : {}
     );
 
     // ═══════════════════════════════════════════════════════════════
     // CARGAR DEPARTAMENTOS Y MUNICIPIOS AL MONTAR EL COMPONENTE
-    // ═══════════════════════════════════════════════════════════════
+    // ════════════════════════════════════════
     useEffect(() => {
         // Si estamos en modo de asociación, no necesitamos cargar departamentos/municipios.
         if (tipo === 'asociar') return;
@@ -89,6 +91,50 @@ function FormularioTerreno({ tipo, onCancelar, onExito, modoEdicion = false, ite
         }));
     };
 
+    const handleCultivoChange = (e) => {
+        setCultivoSeleccionado(e.target.value);
+        setDatosFormulario((prev) => ({
+            ...prev,
+            tipoCultivo: e.target.value
+        }));
+    };
+
+    useEffect(() => {
+        if (tipo !== 'lotes') return;
+
+        const cargarCultivos = async () => {
+            const token = localStorage.getItem('token');
+            try {
+                const res = await fetch(`${BASE_URL}/crops/cultivos`, {
+                    headers: {
+                        'Authorization': 'Bearer ' + token
+                    }
+                });
+                const data = await res.json();
+                for (let cultivo of data.data) {
+                    console.log(`Cultivo cargado: ${cultivo.numero_registro}`);
+                }
+                if (data.status === 'success') {
+                    setCultivos(data.data);
+                    if (modoEdicion && itemEditar?.numero_registro) {
+                        console.log("num cultivo seleccionado:", itemEditar.numero_registro);
+                        setCultivoSeleccionado(itemEditar.numero_registro);
+                        setDatosFormulario((prev) => ({
+                            ...prev,
+                            nombre_comun: itemEditar.nombre_comun
+                        }));
+                    }
+                } else {
+                    console.error('No se pudieron cargar los cultivos:', data.message);
+                }
+            } catch (error) {
+                console.error('Error al cargar cultivos:', error);
+            }
+        };
+
+        cargarCultivos();
+    }, [tipo, modoEdicion, itemEditar]);
+
     // ═══════════════════════════════════════════════════════════════
     // ENVÍO DEL FORMULARIO
     // ═══════════════════════════════════════════════════════════════
@@ -102,7 +148,7 @@ function FormularioTerreno({ tipo, onCancelar, onExito, modoEdicion = false, ite
         try {
             let url, body, method;
 
-            if (tipo === 'lugares') {
+            if (tipo === 'lugares') { 
                 if (modoEdicion && itemEditar) {
                     url = `${BASE_URL}/locations/lugares/${itemEditar.numero_registro}`;
                     method = 'PATCH';
@@ -114,13 +160,33 @@ function FormularioTerreno({ tipo, onCancelar, onExito, modoEdicion = false, ite
                 }
 
             } else if (tipo === 'lotes') {
+                /*modo editar. Else = modo crear */
+                if (modoEdicion && itemEditar) { /*mirar que tengan los nombres y la ruta bien*/
+                url = `${BASE_URL}/locations/lotes/${itemEditar.id}`;
+                method = 'PATCH';
+                body = {
+                numero_registro:datosFormulario.numero_registro, //la key de la base de datos
+                numero_lote: datosFormulario.numero_lote,
+                area: datosFormulario.area,
+                cantidadproyectadarecoleccion: datosFormulario.cantidadproyectadarecoleccion,
+                fecharecoleccion: datosFormulario.fecharecoleccion,
+                cantidad_recoleccion: datosFormulario.cantidad_recoleccion,
+                cantidad_Plantas: datosFormulario.cantidadPlantas,
+                uidcultivo:datosFormulario.uidcultivo //esto solo en caso de que se valla a cambiar el cultivo del lote
+                };
+                } else { /*crear */
                 url = `${BASE_URL}/locations/lotes`;
                 method = 'POST';
                 body = {
-                    numero: datosFormulario.numero,
-                    area: datosFormulario.area,
-                    tipoCultivo: datosFormulario.tipoCultivo
+                numero_lote: datosFormulario.numero,
+                area: datosFormulario.area,
+                cantidad_plantas: datosFormulario.cantidadPlantas,
+                uidlugarproduccion: itemEditar ? itemEditar.id : null,
+                uidcultivo: cultivoSeleccionado
                 };
+            console.log("Datos enviados para lote:", body);
+            }
+
 
             } else if (tipo === 'predios') {
                 if (modoEdicion && itemEditar) {
@@ -238,27 +304,81 @@ function FormularioTerreno({ tipo, onCancelar, onExito, modoEdicion = false, ite
 
                 {tipo === 'lotes' && (
                     <>
+                        {/* Número del lote */}
                         <input
                             className="input-base"
                             name="numero"
                             placeholder="Número de lote"
                             onChange={manejarCambio}
+                            defaultValue={modoEdicion && itemEditar? itemEditar.numero : ''}
+                            type="number"
                             required
                         />
-                        <input
+
+                        {/* Área del lote */}
+                        <input 
                             className="input-base"
                             name="area"
                             placeholder="Área"
+                            type="number"
+                            step="any"
                             onChange={manejarCambio}
+                            defaultValue={modoEdicion && itemEditar? itemEditar.area : ''}
                             required
                         />
-                        <input
+                        {/* Tipo de cultivo */}
+                        <select
                             className="input-base"
                             name="tipoCultivo"
-                            placeholder="Tipo de cultivo"
+                            value={cultivoSeleccionado}
+                            onChange={handleCultivoChange}
+                            required
+                        >
+                            <option value="">Seleccione cultivo</option>
+                            
+                            {cultivos.map((cultivo) => ( 
+                                <option
+                                    key={cultivo.numero_registro}
+                                    value={cultivo.numero_registro}
+                                >
+                                    {cultivo.nombre_comun}
+                                </option>
+                            ))}
+                        </select>
+                
+                            {/* Cantidad de plantas */}
+                        <input
+                            className="input-base"
+                            name="cantidadPlantas"
+                            type="number"
+                            placeholder="Cantidad de plantas"
                             onChange={manejarCambio}
+                            defaultValue={modoEdicion && itemEditar? itemEditar.cantidadPlantas : ''}
                             required
                         />
+                        {modoEdicion &&(
+                            <>
+                            {/* Fecha de siembra */}
+                            <label>Fecha de siembra</label>
+                            <input
+                                className="input-base"
+                                name="fechaSiembra"
+                                type="date"
+                                onChange={manejarCambio}
+                                defaultValue={modoEdicion && itemEditar? itemEditar.fechaSiembra?.split('T')[0] : ''}
+                            />
+                        {/* Fecha de recolección */}
+                            <label>Fecha de recolección</label>
+                            <input 
+                            className="input-base"
+                            name="fechaRecoleccion"
+                            type="date"  
+                            onChange={manejarCambio}                        
+                            defaultValue={modoEdicion && itemEditar? itemEditar.fechaRecoleccion?.split('T')[0] : ''}
+                            />
+                            </>
+                        )}
+
                     </>
                 )}
 

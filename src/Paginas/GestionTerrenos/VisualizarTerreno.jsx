@@ -2,8 +2,9 @@ import React, { useState, useEffect } from 'react';
 import './GestionarTerrenos.css';
 import BASE_URL from '@/services/api-entidades';
 import ListaTerrenos from './ListarTerrenos';
-import FormularioTerreno from './FormulariosCrearTerrenos';
+import FormularioTerreno from './FormulariosTerrenos';
 import PrediosAsociados from './PrediosAsociados';
+import LotesActuales from './LotesActuales';
 
 // Componente principal que maneja la gestión de lugares de producción, lotes y predios
 // Recibe 'tipo' como prop para determinar qué tipo de entidad mostrar
@@ -80,12 +81,17 @@ function VisualizarTerreno({ tipo }) {
         }
         if (tipo === 'lotes') {
             return [
-                { label: 'N° Lote', valor: item.numero },
+                { label: 'N° Registro', valor: item.numero_registro },
+                { label: 'N° Lote', valor: item.numero_lote },
                 { label: 'Área', valor: (item.area || 0) + ' Ha' },
-                { label: 'Cultivo', valor: item.tipoCultivo },
-                { label: 'Cantidad de plantas', valor: item.cantidadPlantas },
-                { label: 'Fecha de siembra', valor: item.fechaSiembra },
-                { label: 'Fecha de recolección', valor: item.fechaRecoleccion }
+                { label: 'cantidad proyectada recoleccion', valor: item.cantidadProyectadaRecoleccion },
+                { label: 'Fecha de recolección', valor: item.fecha_recoleccion },
+                { label: 'cantidad recolección', valor: item.cantidad_recoleccion },
+                { label: 'Cantidad de plantas', valor: item.cantidad_plantas },
+                { label: 'Cultivo', valor: item.uidcultivo },
+                { label: 'Fecha de siembra', valor: item.fechasiembra }
+                
+                
             ];
         }
         if (tipo === 'predios') {
@@ -132,6 +138,16 @@ function VisualizarTerreno({ tipo }) {
     setModo('prediosAsociados');
     };
 
+    const handleVerLotes = (item) => {
+        setItemEditando(item);
+        setModo('LotesActuales');
+    };
+
+    const handleAgregarLote = (lugar) => {
+    setItemEditando(lugar);
+    setModo('crear-lote');
+};
+
     // Función que refresca los datos después de una operación exitosa
     // Se llama desde el formulario cuando se crea/edita/asocia algo
     const refrescarDatos = () => {
@@ -165,6 +181,7 @@ function VisualizarTerreno({ tipo }) {
                             onAsociar={handleAsociar}
                             onDesasociar={handleDesasociar}
                             onVerPredios={handleVerPredios}
+                            onVerLotes={handleVerLotes}
                         />
                     )}
 
@@ -202,6 +219,17 @@ function VisualizarTerreno({ tipo }) {
                 />
             )}
 
+            {modo === 'crear-lote' && (
+                <FormularioTerreno
+                    tipo="lotes"
+                    itemEditar={itemEditando}
+                    onExito={refrescarDatos}
+                    onCancelar={() => {
+                        setModo('ver-lotes');
+                    }}
+                />
+            )}
+
             {/* Modo desasociar: usa el formulario para desasociar con backend */}
             {/* Modo eliminar: usa el formulario para confirmar eliminación con backend */}
             {(modo === 'desasociar' || modo === 'eliminar') && (
@@ -228,6 +256,18 @@ function VisualizarTerreno({ tipo }) {
             {modo === 'prediosAsociados' && (
                 <PrediosAsociados
                     lugar={itemEditando}
+                    onVolver={() => {
+                        setItemEditando(null);
+                        setModo('lista');
+                        refrescarDatos();
+                    }}
+                />
+            )}
+
+            {modo === 'LotesActuales' && (
+                <LotesActuales
+                    lugar={itemEditando}
+                    onAgregarLote={handleAgregarLote}
                     onVolver={() => {
                         setItemEditando(null);
                         setModo('lista');

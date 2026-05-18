@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import BASE_URL from '@/services/api-entidades';
+import BASE_URL_INSPECCIONES from '@/services/api-inspections';
 import './SolicitudInspeccion.css';
 
 function RegistroLugarP() {
@@ -16,9 +17,16 @@ function RegistroLugarP() {
         // Carga los lugares desde el backend
         const fetchLugares = async () => {
             try {
-                const response = await fetch(`${BASE_URL}/lugares`);
+                const usuario = JSON.parse(localStorage.getItem('usuario'));
+                const token = localStorage.getItem('token');
+                const response = await fetch(`${BASE_URL}/locations/lugares/${usuario.id}`, {
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    }
+                });
                 const data = await response.json();
-                setLugares(data);
+                setLugares(data.data);
             } catch (error) {
                 console.error("Error cargando lugares:", error);
             } finally {
@@ -30,38 +38,38 @@ function RegistroLugarP() {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-
         const formData = {
-            nombre: lugarSeleccionado,
-            tipoInspeccion: tipoInspeccion,
-            motivo: motivo.trim(),
+            tipo_inspeccion: tipoInspeccion,
+            comentarios: motivo.trim(),
+            idlugarproduccion: lugarSeleccionado,
         };
-
+        console.log("Datos a enviar:", formData); // Verifico datos antes de enviar
+        //enviar solicitud al backend
         try {
-            const response = await fetch(`${BASE_URL}/registro`, {
+            const token = localStorage.getItem('token');
+            const response = await fetch(`${BASE_URL_INSPECCIONES}/solicitudes`, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Authorization': 'Bearer ' + token, 'Content-Type': 'application/json' },
                 body: JSON.stringify(formData),
             });
 
             const data = await response.json();
-
+            console.log("Respuesta del servidor:", data); // Verificar respuesta del servidor
             if (response.ok) {
                 alert("¡Solicitud enviada exitosamente!");
                 setLugarSeleccionado('');
                 setTipoInspeccion('');
                 setMotivo('');
             } else {
-                alert(data.message || "Error al enviar la solicitud");
+                alert("Error: " + data.message || "Error al enviar la solicitud");
             }
         } catch (error) {
             console.error("Error de conexión:", error);
             alert("Error de conexión con el servidor. Inténtalo más tarde.");
         }
     };
-
     return (
-        <div className="contenedor-pagina-registro">
+        <div className="contenedor-pag-registro">
             <div className="contenedor-formulario">
                 <main>
                     <h1>Solicitud de inspección</h1>
@@ -93,7 +101,7 @@ function RegistroLugarP() {
                         {/* Campo 2: Tipo de inspección */}
                         <label>(*) Tipo de inspección:</label>
                         <div className="grupo-opciones">
-                            {['Inspección técnica', 'Inspección fitosanitaria'].map((tipo) => (
+                            {['inspeccion tecnica', 'inspeccion fitosanitaria'].map((tipo) => (
                                 <label key={tipo} className="opcion-radio">
                                     <input
                                         type="radio"

@@ -6,14 +6,17 @@ import './Perfiles.css';
 import PerfilProductor from './Perfil';
 // Cuando los vayas creando los importas aquí:
 import SolicidudesUsuarios from '@/Paginas/Autenticaciones/SolicitudesUsuarios';
-// import SolicitarInspeccion from './SolicitarInspeccion';
+import VerSolicitudesI from '../Inspecciones/VerSolicitudesI';
+import Usuarios from '../Autenticaciones/Usuarios';
 // import InspeccionesPendientes from './InspeccionesPendientes';
 // import InformesProduccion from './InformesProduccion';
 // import ResultadosInspecciones from './ResultadosInspecciones';
 
 const SECCIONES = {
     perfil:     <PerfilProductor />,
-    solicitudesUsuarios:    <SolicidudesUsuarios />,
+    solicitudesUsuarios:    <SolicidudesUsuarios/>,
+    usuarios:   <Usuarios />,  
+    solicitudesInspeccion:    <VerSolicitudesI/>,
     // pendientes: <InspeccionesPendientes />,
     // informes:   <InformesProduccion />,
     // resultados: <ResultadosInspecciones />,

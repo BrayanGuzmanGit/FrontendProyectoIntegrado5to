@@ -41,6 +41,11 @@ input {
     margin-bottom: 20px; 
 }
 
+.contenedor-botones {
+    display: flex;
+    gap: 15px;
+}
+
 .boton-registrar {
     background: linear-gradient(to bottom, var(--verde-boton), var(--verde-ica));
     color: white;

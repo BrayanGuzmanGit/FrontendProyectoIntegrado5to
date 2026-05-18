@@ -7,34 +7,34 @@ function PrediosAsociados({ lugar, onVolver }) {
 
     const [predios, setPredios] = useState([]);
     const [cargando, setCargando] = useState(true);
-    console.log("ID del lugar que se está enviando:", lugar.id);
-
-    const fetchPredios = async () => {
-        const token = localStorage.getItem('token');
-        try {
-            const res = await fetch(
-                `${BASE_URL}/locations/lugares/${lugar.id}/predios`,
-                {
-                    headers: {
-                        'Authorization': 'Bearer ' + token
-                    }
-                }
-            );
-            const data = await res.json();
-            if (data.status === 'success') {
-                setPredios(data.data);
-            }
-        } catch (error) {
-            console.error(error);
-        } finally {
-            setCargando(false);
-        }
-    };
-
+    console.log("ID del lugar que se está enviando en predios asociados:", lugar.id);
+    // cargar predios asociados
     useEffect(() => {
-        fetchPredios();
-    }, [lugar]);
+        const fetchPredios = async () => {
+            const token = localStorage.getItem('token');
+            try {
+                const res = await fetch(
+                    `${BASE_URL}/locations/lugares/${lugar.id}/predios`,
+                    {
+                        headers: {
+                            'Authorization': 'Bearer ' + token
+                        }
+                    }
+                );
+                 const data = await res.json();
+                if (data.status === 'success') {
+                    setPredios(data.data);
+                }
+            } catch (error) {
+                console.error(error);
+            } finally {
+                setCargando(false);
+            }
+        };
+            fetchPredios();
+        }, [lugar]);
 
+    // asignar predio central
     const handleAsignarCentral = async (predio) => {
         const token = localStorage.getItem('token');
 
@@ -60,7 +60,6 @@ function PrediosAsociados({ lugar, onVolver }) {
 
             if (data.status === 'success') {
                 alert('Predio central actualizado');
-                fetchPredios();
             } else {
                 alert(data.message || 'No se pudo asignar el predio central');
             }
@@ -92,7 +91,7 @@ function PrediosAsociados({ lugar, onVolver }) {
                             <h3>{predio.nombre}</h3>
                         </div>
                         <div className="card-details-section">
-                            <p><strong>Área:</strong> {predio.area} Ha</p>
+                            <p> <strong>Área:</strong> {predio.area} Ha</p>
                             <p><strong>N° Registro:</strong> {predio.numero_registro}</p>
                             <p><strong>Municipio:</strong> {predio.municipio?.nombre || 'N/A'}</p>
                             <p><strong>Dirección:</strong> {predio.direccion}</p>

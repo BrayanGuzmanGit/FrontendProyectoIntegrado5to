@@ -1,0 +1,107 @@
+contenedor-usuarios {
+    padding: 20px;
+}
+
+.contenedor-usuarios h2 {
+    margin-bottom: 20px;
+    color: var(--verde-ica);
+}
+
+/* Tabla con fondo semitransparente */
+.tabla-usuarios {
+    width: 100%;
+    border-collapse: collapse; /* para eliminar espacios entre celdas */
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: 8px;
+    overflow: hidden; /*recorta el contenido que excede los límites */
+}
+
+.tabla-usuarios thead {
+    background-color: var(--verde-ica);
+    color: white;
+}
+
+.tabla-usuarios th,
+.tabla-usuarios td {
+    padding: 12px;
+    text-align: center;
+}
+
+.tabla-usuarios tbody tr {
+    border-bottom: 1px solid rgba(0,0,0,0.1);
+}
+
+.tabla-usuarios tbody tr:hover {
+    background-color: rgba(0,0,0,0.05);
+}
+
+/* Estados */
+.estado {
+    font-weight: bold;
+    text-transform: capitalize; /*Para colocar siempre la primera letra en mayúscula*/
+}
+
+.estado.pendiente {
+    color: rgb(204, 167, 0);
+}
+
+.estado.aprobado {
+    color: var(--verde-boton);
+}
+
+.estado.eliminado {
+    color: rgb(189, 0, 0);
+}
+
+/* Botones usando tus variables */
+.btn {
+    margin: 5px;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 5px; /*redondear bordes*/
+    cursor: pointer; /*manito al pasar*/
+    font-size: 14px;
+    transition: 0.2s; /*tiempo de transición en el cambio de color*/
+}
+
+.btn.aprobar {
+    background-color: var(--verde-boton);
+    color: white;
+    font-weight: 550;
+}
+
+.btn.aprobar:hover {
+    opacity: 0.85; /*nivel de transparencia*/
+}
+
+.btn.eliminar {
+    background-color: #c0392b;
+    color: white;
+    font-weight: 550;
+}
+
+.btn.eliminar:hover {
+    opacity: 0.85;
+}
+
+.filtros {
+    display: inline-flex;            /* para no tener espacios extra */
+    gap: 10px;                  /* espacio entre filtros */
+    align-items: flex-start;        /* alineación vertical */
+    margin-bottom: 15px;
+    padding: 8px 15px;               /* espacio interno */
+    border-radius: 8px;
+}
+
+.filtros select {
+    padding: 6px 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    width: auto;
+}
+
+.filtros input {
+    padding: 6px 10px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+}

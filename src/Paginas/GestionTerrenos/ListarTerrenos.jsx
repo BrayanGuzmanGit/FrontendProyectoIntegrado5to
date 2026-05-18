@@ -1,5 +1,5 @@
 import { Pencil, Trash } from 'lucide-react';
-function ListaTerrenos({ lugares, tipo, obtenerDatos, onEditar, onEliminar, onAsociar, onDesasociar, onVerPredios  }) {
+function ListaTerrenos({ lugares, tipo, obtenerDatos, onEditar, onEliminar, onAsociar, onDesasociar, onVerPredios, onVerLotes  }) {
     return (
         <>
             {lugares.map((item) => (
@@ -42,11 +42,11 @@ function ListaTerrenos({ lugares, tipo, obtenerDatos, onEditar, onEliminar, onAs
                                     className=" btn-secundary" onClick={() => onVerPredios(item)}
                                     >Predios asociados
                                 </button>
-                                <button className="btn-secundary">Lotes actuales</button>
+                                <button className="btn-secundary" onClick={() =>  onVerLotes && onVerLotes(item)}>Lotes actuales</button>
                             </>
                         )}
 
-                        {tipo === 'lotes' && (
+                        {tipo === 'lotes' && ( /*quitar  esto. Lote no tiene más opciones */
                             <button className="btn-secundary">Ver detalles</button>
                         )}
 
