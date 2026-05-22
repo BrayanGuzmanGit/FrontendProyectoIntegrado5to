@@ -4,7 +4,7 @@ import './Perfiles.css';
 
 // Importas los JSX que ya tienes en Paginas/
 import PerfilProductor from './Perfil';;
-import VistaPredio from '@/Paginas/GestionTerrenos/predios/VistaPredios';
+import VistaPredio from '@/Paginas/GestionTerrenos/predios/vistaPredios';
 // Cuando los vayas creando los importas aquí:
 // import LugaresProduccion from './LugaresProduccion';
 // import SolicitarInspeccion from './SolicitarInspeccion';
