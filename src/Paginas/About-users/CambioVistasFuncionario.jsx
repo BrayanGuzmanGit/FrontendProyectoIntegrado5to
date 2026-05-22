@@ -8,16 +8,14 @@ import PerfilProductor from './Perfil';
 import SolicidudesUsuarios from '@/Paginas/Autenticaciones/SolicitudesUsuarios';
 import VerSolicitudesI from '../Inspecciones/VerSolicitudesI';
 import Usuarios from '../Autenticaciones/Usuarios';
-// import InspeccionesPendientes from './InspeccionesPendientes';
 // import InformesProduccion from './InformesProduccion';
 // import ResultadosInspecciones from './ResultadosInspecciones';
 
 const SECCIONES = {
     perfil:     <PerfilProductor />,
     solicitudesUsuarios:    <SolicidudesUsuarios/>,
-    usuarios:   <Usuarios />,  
     solicitudesInspeccion:    <VerSolicitudesI/>,
-    // pendientes: <InspeccionesPendientes />,
+    usuarios:   <Usuarios />,
     // informes:   <InformesProduccion />,
     // resultados: <ResultadosInspecciones />,
 };

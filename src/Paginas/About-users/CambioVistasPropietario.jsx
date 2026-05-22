@@ -3,8 +3,8 @@ import Menu from '@/Componentes/Menu';
 import './Perfiles.css';
 
 // Importas los JSX que ya tienes en Paginas/
-import PerfilProductor from './Perfil';
-import VisualizarTerreno from '@/Paginas/GestionTerrenos/VisualizarTerreno';
+import PerfilProductor from './Perfil';;
+import VistaPredio from '@/Paginas/GestionTerrenos/predios/VistaPredios';
 // Cuando los vayas creando los importas aquí:
 // import LugaresProduccion from './LugaresProduccion';
 // import SolicitarInspeccion from './SolicitarInspeccion';
@@ -14,7 +14,7 @@ import VisualizarTerreno from '@/Paginas/GestionTerrenos/VisualizarTerreno';
 
 const SECCIONES = {
     perfil:     <PerfilProductor />,
-    predios:    <VisualizarTerreno tipo = "predios" />,
+    predios:    <VistaPredio/>,
     // pendientes: <InspeccionesPendientes />,
     // informes:   <InformesProduccion />,
     // resultados: <ResultadosInspecciones />,

@@ -63,21 +63,21 @@ function VerSolicitudesI() {
 
     // Filtrar solicitudes por tipo de inspección
     const solicitudesFiltradas = solicitudes.filter(solicitud => {
-        const tipo = solicitud.tipo ? solicitud.tipo.toString().toLowerCase() : '';
+        const tipo = solicitud.tipo_inspeccion ? solicitud.tipo_inspeccion.toString().toLowerCase() : '';
         return filtroTipo === '' || tipo === filtroTipo;
     });
 
 
     // Prioridad de orden (por si se necesita más adelante)
     const prioridadTipo = {
-        'Inspección técnica': 1,
-        'Inspección fitosanitaria': 2
+        'inspeccion tecnica': 1,
+        'inspeccion fitosanitaria': 2
     };
 
     // Ordenar solicitudes por tipo
     const solicitudesOrdenadas = [...solicitudesFiltradas].sort((a, b) => {
-        const tipoA = a.tipo ? a.tipo.toString().toLowerCase() : '';
-        const tipoB = b.tipo ? b.tipo.toString().toLowerCase() : '';
+        const tipoA = a.tipo_inspeccion ? a.tipo_inspeccion.toString().toLowerCase() : '';
+        const tipoB = b.tipo_inspeccion ? b.tipo_inspeccion.toString().toLowerCase() : '';
         return (prioridadTipo[tipoA] || 999) - (prioridadTipo[tipoB] || 999);
     });
 

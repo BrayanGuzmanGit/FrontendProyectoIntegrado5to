@@ -5,7 +5,7 @@ import './Perfiles.css';
 // Importas los JSX que ya tienes en Paginas/
 import PerfilProductor from './Perfil';
 import SolicitudInspeccion from '@/Paginas/Inspecciones/SolicitudInspeccion';
-import VisualizarTerreno from '@/Paginas/GestionTerrenos/VisualizarTerreno';
+import VistaLugar from '@/Paginas/GestionTerrenos/lugares/VistaLugar';
 // Cuando los vayas creando los importas aquí:
 // import LugaresProduccion from './LugaresProduccion';
 // import SolicitarInspeccion from './SolicitarInspeccion';
@@ -15,7 +15,7 @@ import VisualizarTerreno from '@/Paginas/GestionTerrenos/VisualizarTerreno';
 
 const SECCIONES = {
     perfil:     <PerfilProductor />,
-    lugares:    <VisualizarTerreno tipo = "lugares" />,
+    lugares:    <VistaLugar />,
     solicitar:  <SolicitudInspeccion />,
     // pendientes: <InspeccionesPendientes />,
     // informes:   <InformesProduccion />,
