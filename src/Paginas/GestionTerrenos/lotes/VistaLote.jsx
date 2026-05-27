@@ -15,7 +15,7 @@ function VistaLote({lugar, onVolver}) {
 
 
     return (
-        <section>
+        <section className="card">
             {/* Botón para volver a la vista principal de lugares */}
             <div className="volver-container">
                 <button className="fab-back" onClick={onVolver}> <ArrowLeft size={26} /> </button>
@@ -78,7 +78,7 @@ function VistaLote({lugar, onVolver}) {
 
                     <form onSubmit={enviarFormulario}>
                         {/* Número del lote */}
-                        <label>Numero de lote</label>
+                        <label className='label-base'>Numero de lote</label>
                         <input
                             className="input-base"
                             name="numero_lote"
@@ -90,7 +90,7 @@ function VistaLote({lugar, onVolver}) {
                         />
 
                         {/* Área del lote */}
-                        <label>Area del lote</label>
+                        <label className='label-base'>Area del lote</label>
                         <input
                             className="input-base"
                             name="area"
@@ -104,7 +104,7 @@ function VistaLote({lugar, onVolver}) {
                         />
 
                         {/* Tipo de cultivo */}
-                        <label>Tipo de cultivo</label>
+                        <label className='label-base'>Tipo de cultivo</label>
                         <select
                             className="input-base"
                             name="uidcultivo"
@@ -126,7 +126,7 @@ function VistaLote({lugar, onVolver}) {
                         </select>
 
                         {/* Cantidad de plantas */}
-                        <label>Cantidad de plantas</label>
+                        <label className='label-base'>Cantidad de plantas</label>
                         <input
                             className="input-base"
                             name="cantidad_plantas"
@@ -142,7 +142,7 @@ function VistaLote({lugar, onVolver}) {
                         {pantallaActual === 'editar' && (
                             <>
                                 {/*Fecha de siembra */}
-                                <label>Fecha de siembra (fecha de creación del lote)</label>
+                                <label className='label-base'>Fecha de siembra (fecha de creación del lote)</label>
                                 <input
                                     className="input-base"
                                     name="fechasiembra"
@@ -153,7 +153,7 @@ function VistaLote({lugar, onVolver}) {
                                 />
 
                                 {/* Cantidad proyectada de recolección */}
-                                <label>cantidad proyectada recolección</label>
+                                <label className='label-base'>cantidad proyectada recolección</label>
                                 <input
                                     className="input-base"
                                     name="cantidadproyectadarecoleccion"
@@ -166,7 +166,7 @@ function VistaLote({lugar, onVolver}) {
                                 />
 
                                 {/* Cantidad recolectada */}
-                                <label>cantidad recolectada</label>
+                                <label className='label-base'>cantidad recolectada</label>
                                 <input
                                     className="input-base"
                                     name="cantidad_recoleccion"
@@ -178,7 +178,7 @@ function VistaLote({lugar, onVolver}) {
                                 />
 
                                 {/* Fecha de recolección */}
-                                <label>Fecha de recolección</label>
+                                <label className='label-base'  >Fecha de recolección</label>
                                 <input
                                     className="input-base"
                                     name="fecharecoleccion"

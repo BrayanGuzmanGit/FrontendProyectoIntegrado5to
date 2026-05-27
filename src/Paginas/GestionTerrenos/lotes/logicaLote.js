@@ -165,9 +165,9 @@ export const LogicaLote= (lugar) => {
             { label: 'Tipo de Cultivo', valor: cultivoEncontrado?.nombre_comun },
             { label: 'Cantidad de plantas', valor: lote.cantidad_plantas },
             { label: 'Fecha de siembra', valor: lote.fechasiembra },
-            { label: 'Cantidad proyectada de recoleccion', valor: (lote.cantidadProyectadaRecoleccion || '(Sin especificar)') },
+            { label: 'Cantidad proyectada de recoleccion', valor: (lote.cantidadproyectadarecoleccion || '(Sin especificar)') },
             { label: 'cantidad recolección', valor: (lote.cantidad_recoleccion|| 'Sin especificar') },
-            { label: 'Fecha de recolección', valor: (lote.fecha_recoleccion|| 'Sin especificar') },
+            { label: 'Fecha de recolección', valor: (lote.fecharecoleccion|| 'Sin especificar') },
         ];
     };
     // ENTREGAMOS LAS VARIABLES Y FUNCIONES A LA VISTA JSX

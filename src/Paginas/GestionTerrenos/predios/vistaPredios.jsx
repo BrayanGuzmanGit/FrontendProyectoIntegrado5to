@@ -117,9 +117,9 @@ function VistaPredio() {
                             required
                         />
 
-                        <label>Ubicación</label>
+                        <label className="label-base label-base-center" >Ubicación</label>
                         {/* Departamento */}
-                        <label htmlFor="departamento">(*) Departamento:</label>
+                        <label htmlFor="departamento" className='label-base'> Departamento:</label>
 
                         <select
                             className="input-base"
@@ -142,7 +142,7 @@ function VistaPredio() {
                         </select>
 
                         {/* Municipio */}
-                        <label htmlFor="municipio">(*) Municipio:</label>
+                        <label htmlFor="municipio" className='label-base'>(*) Municipio:</label>
 
                         <select
                             className="input-base"

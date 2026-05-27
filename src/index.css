@@ -91,6 +91,7 @@ body {
   color: var(--color-texto);
   transition: var(--transition);
   box-sizing: border-box;
+  margin-bottom: 20px;
 }
 
 .input-base:focus { /* estilos para inputs enfocados */

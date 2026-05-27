@@ -6,10 +6,7 @@ import './Perfiles.css';
 import PerfilProductor from './Perfil';
 import SolicitudInspeccion from '@/Paginas/Inspecciones/SolicitudInspeccion';
 import VistaLugar from '@/Paginas/GestionTerrenos/lugares/VistaLugar';
-// Cuando los vayas creando los importas aquí:
-// import LugaresProduccion from './LugaresProduccion';
-// import SolicitarInspeccion from './SolicitarInspeccion';
-// import InspeccionesPendientes from './InspeccionesPendientes';
+import InspeccionesPendientesProductor from '@/Paginas/Inspecciones/PendientesProductor';
 // import InformesProduccion from './InformesProduccion';
 // import ResultadosInspecciones from './ResultadosInspecciones';
 
@@ -17,7 +14,7 @@ const SECCIONES = {
     perfil:     <PerfilProductor />,
     lugares:    <VistaLugar />,
     solicitar:  <SolicitudInspeccion />,
-    // pendientes: <InspeccionesPendientes />,
+    pendientes: <InspeccionesPendientesProductor/>,
     // informes:   <InformesProduccion />,
     // resultados: <ResultadosInspecciones />,
 };
