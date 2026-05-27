@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import BASE_URL from '@/services/api-entidades';
 import './Usuarios.css';
 
 /**
@@ -33,7 +34,7 @@ function UsuariosActivos() {
         try {
             setLoading(true);
 
-           const response = await fetch('http://localhost:3001/api/users/all', {
+           const response = await fetch(`${BASE_URL}/users/all`, {
                 method: 'GET',
                 headers: {
                     'Authorization': 'Bearer ' + token
