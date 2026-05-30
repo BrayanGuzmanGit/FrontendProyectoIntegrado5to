@@ -30,10 +30,9 @@ function InspeccionesPendientesProductor(){
                 throw new Error('No se pudieron cargar las inspecciones pendientes.');
             }
             const data = await respuesta.json(); //para tranforma respuesta a json
-            console.log("inspecciones pendientes del productor: "+data.data);
 
             // Guarda los datos obtenidos en el estado (usa data.data si viene envuelto, o data directamente)
-            setInspecciones(data.data || data || []); 
+            setInspecciones(data.data || data || []); // Asegúrate de ajustar esto según la estructura real de tu respuesta
             setCargando(false); // Apaga el estado de carga porque los datos ya llegaron con éxito
 
         } catch (err) {
@@ -66,37 +65,31 @@ function InspeccionesPendientesProductor(){
                 </thead>
 
                 <tbody>
-                    {/* CASO 1: El estado sigue cargando datos de la API */}
                     {cargando ? (
                         <tr>
                             <td colSpan="5" style={{ textAlign: 'center', padding: '20px' }}>
                                 Cargando inspecciones pendientes...
                             </td>
                         </tr>
-                    ) : 
-                    /* CASO 2: La API respondió pero ocurrió un error */
-                    error ? (
+                    ) : error ? (
                         <tr>
                             <td colSpan="5" style={{ textAlign: 'center', padding: '20px' }}>
                                 Error: {error}
                             </td>
                         </tr>
-                    ) : 
-                    /* CASO 3: Terminó de cargar sin errores, pero el arreglo está vacío */
-                    inspecciones.length === 0 ? (
+                    ) : inspecciones.length === 0 ? (
                         <tr>
                             <td colSpan="5" style={{ textAlign: 'center', padding: '20px' }}>
                                 No tienes inspecciones pendientes en este momento.
                             </td>
                         </tr>
                     ) : (
-                        /* CASO 4: Todo salió perfecto y mapeamos las filas reales */
                         inspecciones.map((inspeccion) => (
                             <tr key={inspeccion.idinspeccion}>
-                                <td>{inspeccion.fechainicioinspeccion|| '--'}</td>
-                                <td>{inspeccion.solicitud_inspeccion.idlugarproduccion || '--'}</td>
-                                <td>{inspeccion.solicitud_inspeccion.tipo_inspeccion|| '--'}</td>
-                                <td>{inspeccion.uidtecnico || '--'}</td>
+                                <td>{inspeccion.fechainicioinspeccion || '--'}</td>
+                                <td>{inspeccion.lugarNombre || inspeccion.solicitud_inspeccion?.idlugarproduccion || '--'}</td>
+                                <td>{inspeccion.solicitud_inspeccion?.tipo_inspeccion || '--'}</td>
+                                <td>{inspeccion.tecnicoNombre || '--'}</td>
                                 <td className={`estado ${inspeccion.estado?.toLowerCase()}`}>
                                     {inspeccion.estado || '--'}
                                 </td>

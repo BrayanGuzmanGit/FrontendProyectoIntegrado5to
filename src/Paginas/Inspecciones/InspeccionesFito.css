@@ -1,0 +1,186 @@
+ /*CONTENEDOR PRINCIPAL Y TIPOGRAFÍA*/
+.contenedor-inspecciones {
+    padding: 20px;
+    font-family: sans-serif;
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+ /*CABECERA GLOBAL ESTILO TABLA*/
+.cabecera-global-grid {
+    display: grid;
+    grid-template-columns: 220px 1fr 1fr 1fr 1fr 1fr 100px;
+    padding: 12px 20px;
+    background: rgb(18, 143, 95); /* Color verde base */
+    color: #fff;
+    border-radius: 8px;
+    font-weight: bold;
+    font-size: 16px;
+    margin-bottom: 15px;
+    text-align: center;
+    align-items: center;
+}
+
+.cabecera-global-grid .txt-izquierda {
+    text-align: center;
+}
+
+  /*ESTRUCTURA DE TARJETAS POR CULTIVO (GRID DE 2 COLUMNAS)*/
+.tarjeta-cultivo-bloque {
+    display: grid;
+    grid-template-columns: 220px 1fr;
+    border-radius: 20px;
+    margin-bottom: 20px; 
+    overflow: hidden;
+    box-shadow: var(--shadow);
+    border: var(--color-borde);
+    background-color: var(--color-fondo);
+}
+
+.tarjeta-cultivo-bloque .columna-cultivo-info {
+    border-right: 1px solid var(--color-borde);
+}
+.tarjeta-cultivo-bloque .nombre-cultivo {
+    color: var(--color-texto-destacado);
+}
+.tarjeta-cultivo-bloque .fila-subtotal-tarjeta {
+    border-top: 1px solid var(--color-borde);
+}
+
+ /*INTERCALADOS */
+.tarjeta-cultivo-bloque:nth-of-type(3n+1) {
+    --color-borde: #fca5a5;
+    --color-fondo: #fff5f5;
+    --color-texto-destacado: #ef4444;
+}
+
+.tarjeta-cultivo-bloque:nth-of-type(3n+2) {
+    --color-borde: #529169;
+    --color-fondo: #f0fdf4;
+    --color-texto-destacado: #287e48;
+}
+
+.tarjeta-cultivo-bloque:nth-of-type(3n) {
+    --color-borde: #69b1ad;
+    --color-fondo: #e8f2fe;
+    --color-texto-destacado: #23918b;
+}
+
+
+/* Columna Izquierda: Info Fija del Cultivo */
+.columna-cultivo-info {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    background-color: #fff;
+}
+
+.columna-cultivo-info .img-cultivo {
+    width: 180px;
+    height: 180px;
+    border-radius: 12px;
+    object-fit: cover;
+    margin-bottom: 10px;
+}
+
+.columna-cultivo-info .nombre-cultivo {
+    font-weight: bold;
+    font-size: 16px;
+}
+
+.columna-cultivo-info .cientifico-cultivo {
+    font-size: 12px;
+    color: #718096;
+    font-style: italic;
+}
+
+/* Columna Derecha: Bloque contenedor de lotes */
+.columna-lotes-listado {
+    display: flex;
+    flex-direction: column;
+}
+
+/* ==========================================================================
+   FILAS DE LOS LOTES E INSPECCIÓN
+   ========================================================================== */
+.fila-lote-registro {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 100px;
+    padding: 16px 10px;
+    border-bottom: 1px solid rgba(0,0,0,0.04);
+    text-align: center;
+    align-items: center;
+    font-size: 14px;
+    color: var(--color-texto);
+}
+
+.fila-lote-registro .id-destacado {
+    font-weight: 600;
+}
+
+/* Badges de estado */
+.badge-estado {
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.badge-estado.terminada {
+    background-color: #def7ec;
+    color: #03543f;
+}
+
+.badge-estado.pendiente {
+    background-color: #fde8e8;
+    color: #9b1c1c;
+}
+
+/* Botón de acción interno */
+.btn-ver-lote {
+    padding: 6px 14px;
+    background-color: #fff;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+/* Fila de Subtotal Interno */
+.fila-subtotal-tarjeta {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr 1fr 100px;
+    padding: 12px 10px;
+    background-color: rgba(0, 0, 0, 0.02);
+    text-align: center;
+    font-weight: bold;
+    font-size: 14px;
+    color: #4a5568;
+}
+
+.fila-subtotal-tarjeta .txt-subtotal {
+    text-align: left;
+    padding-left: 15px;
+    color: #2d3748;
+}
+
+/* BARRA DE TOTAL GENERAL INFERIOR*/
+.barra-total-general{
+    display: grid;
+    grid-template-columns: 220px 1fr 1fr 1fr 1fr 1fr 100px;
+    padding: 16px 20px;
+    background: var(--color-texto);
+    color: #fff;
+    border-radius: 12px;
+    font-weight: bold;
+    font-size: 15px;
+    text-align: center;
+    margin-top: 25px;
+}
+
+.barra-total-general .txt-izquierda {
+    text-align: left;
+}

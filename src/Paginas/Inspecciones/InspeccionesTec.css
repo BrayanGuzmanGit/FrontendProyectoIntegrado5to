@@ -1,0 +1,179 @@
+/* Banner de advertencia superior */
+.banner-advertencia {
+    background-color: #fef08a; /* Amarillo suave */
+    border: 2px solid #eab308; /* Borde amarillo oscuro */
+    color: #713f12;
+    padding: 10px 20px;
+    border-radius: 20px;
+    font-weight: bold;
+    text-align: center;
+    max-width: 900px;
+    margin: 0 auto 15px auto;
+    margin-bottom: 20px;
+}
+
+/* Contenedor principal */
+.card-inspeccion-tecnica {
+    background-color: #fce7f3; 
+    border: 3px solid #c084fc; 
+    border-radius: 24px;
+    padding: 25px;
+    max-width: 900px;
+    margin: 20px auto;
+}
+
+/* Contenedor de las áreas específicas */
+.bloque-acordeon-area {
+    background-color: #ffffff;
+    border: 2px solid #cbd5e1;
+    border-radius: 20px;
+    margin-bottom: 15px;
+    overflow: hidden;
+}
+
+/* El encabezado cuando está guardado el contenedor */
+.header-acordeon {
+    padding: 14px 20px;
+    font-size: 18px;
+    font-weight: bold;
+    color: #475569;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    cursor: pointer;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+/* ==========================================
+   TRANSICIÓN REPARADA (ESTADO CERRADO)
+   ========================================== */
+.body-acordeon-desplegado {
+    display: grid;
+    grid-template-rows: 0fr; /* Altura 0 de forma nativa para Grid */
+    overflow: hidden;
+    opacity: 0;
+    transition: grid-template-rows 0.4s ease-in-out, opacity 0.3s ease-in-out;
+}
+
+/* TRANSICIÓN REPARADA (ESTADO ABIERTO) */
+.body-acordeon-desplegado.abierto {
+    grid-template-rows: 1fr; /* Crece fluidamente hasta la altura de su contenido */
+    opacity: 1;
+}
+
+/* Contenedor Grid interno para estructurar las 2 columnas */
+.grid-interno-acordeon {
+    display: grid;
+    grid-template-columns: 250px 1fr; /* Columna izquierda fija, derecha flexible */
+    min-height: 0; /* Obligatorio para que los hijos colapsen suavemente */
+}
+
+/* Columna Izquierda: Info de referencia */
+.seccion-referencia {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    border-right: 1px solid #e2e8f0;
+    background-color: #fff;
+    text-align: center;
+    min-height: 0;
+}
+
+.seccion-referencia h4 {
+    font-size: 18px;
+    color: #1e293b;
+    margin: 0 0 5px 0;
+}
+
+.seccion-referencia .subtexto {
+    font-size: 13px;
+    color: #64748b;
+    margin-bottom: 10px;
+}
+
+.cuadro-imagen {
+    width: 160px;
+    height: 120px;
+    background-color: #f8fafc;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Columna Derecha: Formulario */
+.seccion-formulario {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    min-height: 0;
+}
+
+/* Pregunta y texto superior centrado */
+.seccion-formulario .pregunta {
+    font-weight: bold;
+    color: #334155;
+    margin-bottom: 15px;
+    text-align: center; /* Centrado como en tu boceto */
+}
+
+/* CONTENEDOR SÍ / NO*/
+.contenedor-switches {
+    display: flex;
+    justify-content: center; 
+    gap: 15px;
+    margin-bottom: 20px;
+}
+
+.btn-switch {
+    padding: 8px 24px;
+    border-radius: 20px;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+    font-size: 14px;
+    color: #fff;
+    background-color: #cbd5e1; /* Gris si no está seleccionado */
+    transition: background-color 0.2s, transform 0.1s;
+}
+
+.btn-switch.si.activo-verde {
+    background-color: #22c55e; /* Verde brillante */
+}
+
+.btn-switch.no.activo-rojo {
+    background-color: #ef4444; /* Rojo brillante */
+}
+
+/* comenta por qué */
+.indicacion-comentario {
+    font-weight: bold;
+    color: #334155;
+    margin: 10px 0 8px 0;
+    text-align: left; 
+}
+
+
+/* Estilo unificado para ambos botones morados */
+.btn-final {
+    background-color: #a855f7; 
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: bold;
+    padding: 10px 30px;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    transition: all 0.2s ease-in-out;
+    margin: 0 20px;
+}
+
+.btn-final:hover {
+    background-color: #9333ea; 
+}
+
+.btn-final:active {
+    transform: translateY(0);
+}
