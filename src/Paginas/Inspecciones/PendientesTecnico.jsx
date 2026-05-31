@@ -6,21 +6,19 @@ import { ArrowLeft } from "lucide-react";
 
 function InspeccionesPendientesTecnico(){
 
-    // Parte de la lógica
-
-    const [inspecciones, setInspecciones] = useState([]); // Almacena el arreglo de inspecciones
-    const [cargando, setCargando] = useState(true); // Para mostrar un mensaje de "Cargando..." mientras llegan los datos
-    const [error, setError] = useState(null); // Para mostrar errores de la API al usuario
-    const [idFitoSeleccionada, setIdFitoSeleccionada] = useState(null); // para almacenar el id de la inspeccion fitosanitaria que se selecciona
+    const [inspecciones, setInspecciones] = useState([]);
+    const [cargando, setCargando] = useState(true);
+    const [error, setError] = useState(null);
+    const [idFitoSeleccionada, setIdFitoSeleccionada] = useState(null);
     const [inspeccionTecnicaSeleccionada, setInspeccionTecnicaSeleccionada] = useState(null);
+    const [filtroTipo, setFiltroTipo] = useState('');
+    const [filtroEstado, setFiltroEstado] = useState('');         // 🆕
 
-    // Parte de la petición API
     const verPendientes = async () => {
         const token = localStorage.getItem('token');
         try {
             setCargando(true);
             setError(null);
-
             const respuesta = await fetch(`${BASE_URL_INSPECTIONS}/tecnica/asignadas`, {
                 method: 'GET',
                 headers: {
@@ -28,50 +26,58 @@ function InspeccionesPendientesTecnico(){
                     Authorization: 'Bearer ' + token
                 }
             });
-            if (!respuesta.ok) {
-                throw new Error('No se pudieron cargar las inspecciones pendientes.');
-            }
-
+            if (!respuesta.ok) throw new Error('No se pudieron cargar las inspecciones pendientes.');
             const data = await respuesta.json();
-            console.log("Respuesta del servidor:", data);
             setInspecciones(data.data || data || []);
             setCargando(false);
-
         } catch (err) {
-            console.error("Error en la petición:", err);
             setError(err.message);
             setCargando(false);
         }
-    }
+    };
 
     useEffect(() => {
         document.title = "Mis Inspecciones";
         verPendientes();
     }, []);
 
+    // ── Filtrar y ordenar ────────────────────────────────────────────────────
+    const prioridadEstado = { 'en proceso': 1, 'pendiente': 2 };   // 🆕
+
+    const solicitudesOrdenadas = [...inspecciones]
+        .filter(s => {
+            // ✅ Ruta corregida: solicitud_inspeccion.tipo_inspeccion
+            const tipo   = s.solicitud_inspeccion?.tipo_inspeccion?.toLowerCase() || '';
+            const estado = s.estado?.toLowerCase() || '';
+            const coincideTipo   = filtroTipo   === '' || tipo   === filtroTipo;
+            const coincideEstado = filtroEstado === '' || estado === filtroEstado;  // 🆕
+            return coincideTipo && coincideEstado;
+        })
+        .sort((a, b) => {
+            const estadoA = a.estado?.toLowerCase() || '';
+            const estadoB = b.estado?.toLowerCase() || '';
+            return (prioridadEstado[estadoA] || 999) - (prioridadEstado[estadoB] || 999); // 🆕 "en proceso" primero
+        });
+
     const manejarAccionBotones = (inspeccion, tipo) => {
         if (tipo === 'inspeccion tecnica') {
-            setInspeccionTecnicaSeleccionada(inspeccion); // Lógica para inspección técnica
+            setInspeccionTecnicaSeleccionada(inspeccion);
         } else {
-            // Lógica para inspección fitosanitaria: Activamos la vista del detalle
             setIdFitoSeleccionada(inspeccion.idinspeccion);
         }
     };
 
-    // Función para limpiar el estado y regresar a la lista de pendientes
     const regresarALista = () => {
         setIdFitoSeleccionada(null);
         setInspeccionTecnicaSeleccionada(null);
-    }
+    };
 
     if (idFitoSeleccionada !== null) {
         return (
             <>
-                {/* Agregamos el contenedor del botón volver aquí para que afecte a la ventana general */}
                 <div className="volver-container">
-                    <button className="fab-back" onClick={regresarALista}><ArrowLeft size={26} /> </button>
+                    <button className="fab-back" onClick={regresarALista}><ArrowLeft size={26} /></button>
                 </div>
-                {/* Tu archivo de la tabla agrupada recibe el ID seleccionado */}
                 <InspeccionFitosanitariaGeneral
                     idInspeccionSeleccionada={idFitoSeleccionada}
                     onVolver={regresarALista}
@@ -86,21 +92,35 @@ function InspeccionesPendientesTecnico(){
                 <div className="volver-container">
                     <button className="fab-back" onClick={regresarALista}><ArrowLeft size={26} /></button>
                 </div>
-                <InspeccionTecnica 
+                <InspeccionTecnica
                     idInspeccionSeleccionada={inspeccionTecnicaSeleccionada.idinspeccion}
-                    nombreLugar={
-                        inspeccionTecnicaSeleccionada.lugarNombre
-                    }
+                    nombreLugar={inspeccionTecnicaSeleccionada.lugarNombre}
                     onVolver={regresarALista}
                 />
             </>
         );
     }
 
-    // Parte de la vista
     return (
         <div className="contenedor-usuarios">
             <h2>Inspecciones Pendientes</h2>
+
+            <div className="filtros">
+                {/* Filtro tipo */}
+                <select value={filtroTipo} onChange={(e) => setFiltroTipo(e.target.value)}>
+                    <option value="">Todos los tipos</option>
+                    <option value="inspeccion tecnica">Inspección Técnica</option>
+                    <option value="inspeccion fitosanitaria">Inspección Fitosanitaria</option>
+                </select>
+
+                {/* 🆕 Filtro estado */}
+                <select value={filtroEstado} onChange={(e) => setFiltroEstado(e.target.value)}>
+                    <option value="">Todos los estados</option>
+                    <option value="en proceso">En Proceso</option>
+                    <option value="pendiente">Pendiente</option>
+                </select>
+            </div>
+
             <table className="tabla-usuarios">
                 <thead>
                     <tr>
@@ -113,49 +133,18 @@ function InspeccionesPendientesTecnico(){
                     </tr>
                 </thead>
                 <tbody>
-
-                    {/* CASO 1: Cargando */}
                     {cargando ? (
-                        <tr>
-                            <td colSpan="6" style={{ textAlign: 'center', padding: '20px' }}>
-                                Cargando inspecciones pendientes...
-                            </td>
-                        </tr>
-                    ) :
-
-                    /* CASO 2: Error */
-                    error ? (
-                        <tr>
-                            <td colSpan="6" style={{ textAlign: 'center', padding: '20px' }}>
-                                Error: {error}
-                            </td>
-                        </tr>
-
-                    ) :
-
-                    /* CASO 3: Vacío */
-                    inspecciones.length === 0 ? (
-                        <tr>
-                            <td colSpan="6" style={{ textAlign: 'center', padding: '20px' }}>
-                                No tienes inspecciones pendientes en este momento.
-                            </td>
-                        </tr>
+                        <tr><td colSpan="6" style={{ textAlign: 'center', padding: '20px' }}>Cargando inspecciones pendientes...</td></tr>
+                    ) : error ? (
+                        <tr><td colSpan="6" style={{ textAlign: 'center', padding: '20px' }}>Error: {error}</td></tr>
+                    ) : solicitudesOrdenadas.length === 0 ? (   // ✅ usa la lista filtrada
+                        <tr><td colSpan="6" style={{ textAlign: 'center', padding: '20px' }}>No hay inspecciones que coincidan con los filtros.</td></tr>
                     ) : (
-
-                        /* CASO 4: Renderizado de filas */
-                        inspecciones.map((inspeccion) => {
+                        solicitudesOrdenadas.map((inspeccion) => {   // ✅ usa la lista filtrada
                             const tipo = inspeccion.solicitud_inspeccion?.tipo_inspeccion?.toLowerCase() || '';
                             const estadoInspeccion = inspeccion.solicitud_inspeccion?.estado?.toLowerCase() || '';
-                            // Evaluamos la clase de color base usando tu "if"
-                            let claseBotonBase = '';
-                            if (tipo === 'inspeccion tecnica') {
-                                claseBotonBase = 'btn-tecnica';
-                            } else {
-                                claseBotonBase = 'btn-fitosanitaria';
-                            }
-                            // Control de estado terminado o finalizado
-                            const estaTerminada = estadoInspeccion === 'terminada' || estadoInspeccion === 'finalizada' || estadoInspeccion === 'terminado';
-                            // Si está terminada no le pasamos color extra para que el CSS maneje el estado disabled por defecto
+                            let claseBotonBase = tipo === 'inspeccion tecnica' ? 'btn-tecnica' : 'btn-fitosanitaria';
+                            const estaTerminada = ['terminada', 'finalizada', 'terminado'].includes(estadoInspeccion);
                             const claseEstiloFinal = estaTerminada ? '' : claseBotonBase;
                             const textoBoton = estaTerminada ? 'Finalizada' : 'Iniciar';
                             return (
@@ -168,11 +157,11 @@ function InspeccionesPendientesTecnico(){
                                         {inspeccion.estado || '--'}
                                     </td>
                                     <td>
-                                        <button className={`btn-primary ${claseEstiloFinal}`}
+                                        <button
+                                            className={`btn-primary ${claseEstiloFinal}`}
                                             disabled={estaTerminada}
                                             onClick={() => manejarAccionBotones(inspeccion, tipo)}
-                                        >{textoBoton}
-                                        </button>
+                                        >{textoBoton}</button>
                                     </td>
                                 </tr>
                             );
@@ -183,4 +172,5 @@ function InspeccionesPendientesTecnico(){
         </div>
     );
 }
+
 export default InspeccionesPendientesTecnico;
