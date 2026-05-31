@@ -1,51 +1,97 @@
-import { useEffect, useState } from "react";
+import { useState, useEffect } from "react";  // ← añadir useEffect
 import { ArrowLeft, ChevronDown, ChevronUp, TriangleAlert } from 'lucide-react';
 import BASE_URL_INSPECTIONS from '@/services/api-inspections'; 
 import "./InspeccionesTec.css";
 
+// ─── Clave única por inspección ──────────────────────────────────────────────
+const claveStorage = (id) => `inspeccion_tecnica_${id}`;
+
+// ─── Estado inicial vacío (extraído para reutilizarlo) ───────────────────────
+const formularioVacio = {
+    areaacopio: null, arearesiduosvegetales: null, areaalmacenamientoinsumos: null,
+    areadosificacion: null, areapreparacionmezclas: null,
+    areaalmacenamientoequiposyherramientas: null, arearesiduosmezclasylavado: null,
+    areasanitariaylavamanos: null,                        // ← faltaba en el original
+
+    comentarioAcopio: "", comentarioResiduosvegetales: "",
+    comentarioAlmacenamientoinsumos: "", comentarioDosificacion: "",
+    comentarioPreparacionmezclas: "", comentarioEquiposyherramientas: "",
+    comentarioResiduosmezclasylavado: "", comentarioSanitariaylavamanos: ""
+};
+
 function InspeccionTecnica({ idInspeccionSeleccionada, nombreLugar }) {
-    // 1. ESTADOS DEL COMPONENTE
-    const [listaAreas, setListaAreas] = useState([]); 
+
     const [cargando, setCargando] = useState(true);
     const [error, setError] = useState(null);
     const [idAreaAbierta, setIdAreaAbierta] = useState(null); 
 
-    // Petición API para obtener los datos del lugar de producción
-    const obtenerAreas = async () => {
+    // ── }inicializar desde localStorage si existe ──────────────────
+    const [formulario, setFormulario] = useState(() => {
+        try {
+            const guardado = localStorage.getItem(claveStorage(idInspeccionSeleccionada));
+            return guardado ? JSON.parse(guardado) : formularioVacio;
+        } catch {
+            return formularioVacio;
+        }
+    });
+
+    // ──sincronizar localStorage cada vez que cambia el formulario ─
+    useEffect(() => {
+        try {
+            localStorage.setItem(
+                claveStorage(idInspeccionSeleccionada),
+                JSON.stringify(formulario)
+            );
+        } catch (e) {
+            console.warn("No se pudo guardar en localStorage:", e);
+        }
+    }, [formulario, idInspeccionSeleccionada]);
+
+    const guardarInspeccion = async (estado) => {
         const token = localStorage.getItem('token');
         try {
-            setCargando(true);
-            setError(null);
-            
-            const respuesta = await fetch(`${BASE_URL_INSPECTIONS}/${idInspeccionSeleccionada}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + token
-                }
-            });
+            const body = {
+                idinspeccion: idInspeccionSeleccionada,
+                ...formulario,
+                estado: estado
+            };
 
-            if (!respuesta.ok) {
-                throw new Error('No se pudo acceder a la información del formulario.');
-            }
+            const respuesta = await fetch(
+                `${BASE_URL_INSPECTIONS}/tecnica/asignadas`,
+                {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    body: JSON.stringify(body)
+                }
+            );
 
             const data = await respuesta.json();
-            setListaAreas(data.data || data); 
-            setCargando(false);
+            
+            if (!respuesta.ok) {
+                throw new Error(data.message || "Error al guardar");
+            }
 
-        } catch (err) {
-            console.error("Error cargando formulario:", err);
-            setError(err.message);
+            // ── CAMBIO 3: al terminar, limpiar el borrador guardado ─────────
+            if (estado === "Terminada") {
+                localStorage.removeItem(claveStorage(idInspeccionSeleccionada));
+            }
+
+            alert(
+                estado === "Terminada"
+                    ? "Informe generado correctamente"
+                    : "Cambios guardados. Puedes retomar esta inspección cuando quieras."
+            );
+        } catch (error) {
+            console.error(error);
+            setError(error.message);
+        } finally {
             setCargando(false);
         }
     };
 
-    // Dispara la consulta al montar o cambiar el ID
-    useEffect(() => {
-        if (idInspeccionSeleccionada) {
-            obtenerAreas();
-        }
-    }, [idInspeccionSeleccionada]);
 
     // Cambia el estado para abrir o cerrar el contenedor al hacer clic
     const alternarAcordeon = (id) => {
@@ -53,42 +99,79 @@ function InspeccionTecnica({ idInspeccionSeleccionada, nombreLugar }) {
     };
 
     // Guarda si el técnico presionó "Sí" o "No"
-    const manejarCumplimiento = (idArea, valorCumple) => {
-        setListaAreas(listaAreas.map(area => 
-            area.id === idArea ? { ...area, cumple: valorCumple } : area
-        ));
+    const manejarCumplimiento = (campo, valor) => {
+        setFormulario(prev => ({
+            ...prev,
+            [campo]: valor
+        }));
     };
 
     // Guarda el texto de las observaciones
-    const manejarComentario = (idArea, texto) => {
-        setListaAreas(listaAreas.map(area => 
-            area.id === idArea ? { ...area, comentarios: texto } : area
-        ));
+    const manejarComentario = (campo, texto) => {
+        setFormulario(prev => ({
+            ...prev,
+            [campo]: texto
+        }));
     };
 
-    // CÁLCULOS DINÁMICOS
-    const areasTotales = listaAreas.length;
-    const areasRevisadas = listaAreas.filter(area => area.cumple !== null).length;
-    const faltanPorMonitorear = areasTotales - areasRevisadas;
-
-    if (cargando) {
-        return <div className="cargando-texto">Cargando el formulario...</div>;
-    }
-
+    
     if (error) {
         return <div className="error-texto">Error: {error}</div>;
     }
 
+    const areas = [
+        {   id: 1, //solo para reconocer desde el front
+            nombre: "Área de Acopio", // el texto que muestra al usuario el front
+            campo: "areaacopio", //nombre exacto del backend
+            comentario: "comentarioAcopio", //nombre exacto del backend
+            url_imagen: "https://www.gob.mx/cms/uploads/article/main_image/38326/CENTROS_DE_ACOPIO_Y_MERMAS.jpg" //url traída desde aquí
+        },
+        {   id: 2,
+            nombre: "Área de Residuos Vegetales",
+            campo: "arearesiduosvegetales",
+            comentario: "comentarioResiduosvegetales",
+            url_imagen: "https://www.gob.mx/cms/uploads/article/main_image/38326/CENTROS_DE_ACOPIO_Y_MERMAS.jpg" //url traída desde aquí
+        },
+        {    id: 3,
+            nombre: "Área de Almacenamiento de Insumos",
+            campo: "areaalmacenamientoinsumos",
+            comentario: "comentarioAlmacenamientoinsumos",
+            url_imagen: "https://www.gob.mx/cms/uploads/article/main_image/38326/CENTROS_DE_ACOPIO_Y_MERMAS.jpg" //url traída desde aquí
+        },
+        {   id: 4,
+            nombre: "Área de Dosificación",
+            campo: "areadosificacion",
+            comentario: "comentarioDosificacion",
+            url_imagen: "https://www.gob.mx/cms/uploads/article/main_image/38326/CENTROS_DE_ACOPIO_Y_MERMAS.jpg" //url traída desde aquí
+        },
+        {   id: 5,
+            nombre: "Área de Preparación de Mezclas",
+            campo: "areapreparacionmezclas",
+            comentario: "comentarioPreparacionmezclas",
+            url_imagen: "https://www.gob.mx/cms/uploads/article/main_image/38326/CENTROS_DE_ACOPIO_Y_MERMAS.jpg" //url traída desde aquí
+        },
+        {   id: 6,
+            nombre: "Área de Equipos y Herramientas",
+            campo: "areaalmacenamientoequiposyherramientas",
+            comentario: "comentarioEquiposyherramientas",
+            url_imagen: "https://www.gob.mx/cms/uploads/article/main_image/38326/CENTROS_DE_ACOPIO_Y_MERMAS.jpg" //url traída desde aquí
+        },
+        {   id: 7,
+            nombre: "Área de Residuos de Mezclas y Lavado",
+            campo: "arearesiduosmezclasylavado",
+            comentario: "comentarioResiduosmezclasylavado",
+            url_imagen: "https://www.gob.mx/cms/uploads/article/main_image/38326/CENTROS_DE_ACOPIO_Y_MERMAS.jpg" //url traída desde aquí
+        },
+        {   id: 8,
+            nombre: "Área Sanitaria y Lavamanos",
+            campo: "areasanitariaylavamanos",
+            comentario: "comentarioSanitariaylavamanos",
+            url_imagen: "https://www.gob.mx/cms/uploads/article/main_image/38326/CENTROS_DE_ACOPIO_Y_MERMAS.jpg" //url traída desde aquí
+        }
+    ];
+
     return (
         <div className="contenedor-principal">
-            
-            {/* Advertencia dinámica */}
-            {faltanPorMonitorear > 0 && (
-                <div className="banner-advertencia">
-                    <TriangleAlert size={22} style={{ marginRight: '8px', verticalAlign: 'middle' }} />
-                    Faltan {faltanPorMonitorear} áreas por monitorear. Asegúrate de visitarlas todas.
-                </div>
-            )}
 
             {/* Contenedor Morado Principal */}
             <section>
@@ -98,7 +181,7 @@ function InspeccionTecnica({ idInspeccionSeleccionada, nombreLugar }) {
                 <div className="card-inspeccion-tecnica">
 
                     {/* Recorremos la lista de áreas dinámicas */}
-                    {listaAreas.map((area) => {
+                    {areas.map((area) => {
                         const estaAbierto = idAreaAbierta === area.id;
 
                         return (
@@ -106,7 +189,7 @@ function InspeccionTecnica({ idInspeccionSeleccionada, nombreLugar }) {
                                 
                                 {/* Encabezado del acordeón */}
                                 <div className="header-acordeon" onClick={() => alternarAcordeon(area.id)}>
-                                    <span>{area.nombre_area}</span>
+                                    <span>{area.nombre}</span>
                                     <span className="icono-flecha">
                                         {estaAbierto ? <ChevronUp size={26} /> : <ChevronDown size={26} />}
                                     </span>
@@ -120,13 +203,13 @@ function InspeccionTecnica({ idInspeccionSeleccionada, nombreLugar }) {
                                         
                                         {/* Subsección Izquierda: Imagen y Referencia por URL */}
                                         <div className="seccion-referencia">
-                                            <h4>{area.nombre_area}</h4>
+                                            <h4>{area.nombre}</h4>
                                             <p className="subtexto">Imagen de referencia</p>
                                             <div className="cuadro-imagen">
-                                                {area.imagen_url ? (
+                                                {area.url_imagen ? (
                                                     <img 
-                                                        src={area.imagen_url} 
-                                                        alt={`Referencia de ${area.nombre_area}`}
+                                                        src={area.url_imagen} 
+                                                        alt={`Referencia de ${area.nombre}`}
                                                         style={{ width: '100%', height: '100%', borderRadius: '12px', objectFit: 'cover' }}
                                                     />
                                                 ) : (
@@ -143,15 +226,15 @@ function InspeccionTecnica({ idInspeccionSeleccionada, nombreLugar }) {
                                             <div className="contenedor-switches">
                                                 <button 
                                                     type="button"
-                                                    className={`btn-switch si ${area.cumple === true ? 'activo-verde' : ''}`}
-                                                    onClick={() => manejarCumplimiento(area.id, true)}
+                                                    className={`btn-switch si ${formulario[area.campo] === true? 'activo-verde' : ''}`}
+                                                    onClick={() => manejarCumplimiento(area.campo, true)}
                                                 >
                                                     Sí
                                                 </button>
                                                 <button 
                                                     type="button"
-                                                    className={`btn-switch no ${area.cumple === false ? 'activo-rojo' : ''}`}
-                                                    onClick={() => manejarCumplimiento(area.id, false)}
+                                                    className={`btn-switch no ${formulario[area.campo] === false ? 'activo-rojo' : ''}`}
+                                                    onClick={() => manejarCumplimiento(area.campo, false)}
                                                 >
                                                     No
                                                 </button>
@@ -160,11 +243,11 @@ function InspeccionTecnica({ idInspeccionSeleccionada, nombreLugar }) {
                                             <p className="indicacion-comentario">Coméntanos por qué</p>
                                             
                                             <textarea
-                                                className="textarea-comentarios"
-                                                value={area.comentarios || ""}
-                                                onChange={(e) => manejarComentario(area.id, e.target.value)}
+                                                className= "input-base textarea-base"
+                                                value={formulario[area.comentario]||''}
+                                                onChange={(e) => manejarComentario(area.comentario, e.target.value)}
                                                 placeholder={
-                                                    area.cumple === false
+                                                    formulario[area.campo] === false
                                                         ? "Ej: La zona no está techada, no cuenta con avisos de advertencia, el piso no es impermeable, etc."
                                                         : "Ej: Las herramientas están organizadas, kit de emergencias al día, plaguicidas separados de los fertilizantes, etc."
                                                 }
@@ -179,8 +262,8 @@ function InspeccionTecnica({ idInspeccionSeleccionada, nombreLugar }) {
 
                     {/* Botones de acción finales */}
                     <div className="bloque-botones-finales">
-                        <button className="btn-final guardar">Guardar cambios</button>
-                        <button className="btn-final informe">Generar Informe</button>
+                        <button className="btn-final guardar" onClick={() => guardarInspeccion("En proceso")}>Guardar cambios</button>
+                        <button className="btn-final informe"  onClick={() => guardarInspeccion("Terminada")}>Generar Informe</button>
                     </div>
 
                 </div>

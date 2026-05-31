@@ -12,7 +12,7 @@ function InspeccionesPendientesTecnico(){
     const [cargando, setCargando] = useState(true); // Para mostrar un mensaje de "Cargando..." mientras llegan los datos
     const [error, setError] = useState(null); // Para mostrar errores de la API al usuario
     const [idFitoSeleccionada, setIdFitoSeleccionada] = useState(null); // para almacenar el id de la inspeccion fitosanitaria que se selecciona
-    const [idTecnicaSeleccionada, setIdTecnicaSeleccionada] = useState(null);
+    const [inspeccionTecnicaSeleccionada, setInspeccionTecnicaSeleccionada] = useState(null);
 
     // Parte de la petición API
     const verPendientes = async () => {
@@ -28,12 +28,12 @@ function InspeccionesPendientesTecnico(){
                     Authorization: 'Bearer ' + token
                 }
             });
-
             if (!respuesta.ok) {
                 throw new Error('No se pudieron cargar las inspecciones pendientes.');
             }
 
-                    const data = await respuesta.json();
+            const data = await respuesta.json();
+            console.log("Respuesta del servidor:", data);
             setInspecciones(data.data || data || []);
             setCargando(false);
 
@@ -49,19 +49,19 @@ function InspeccionesPendientesTecnico(){
         verPendientes();
     }, []);
 
-    const manejarAccionBotones = (idInspeccion, tipo) => {
+    const manejarAccionBotones = (inspeccion, tipo) => {
         if (tipo === 'inspeccion tecnica') {
-            setIdTecnicaSeleccionada(idInspeccion); // Lógica para inspección técnica
+            setInspeccionTecnicaSeleccionada(inspeccion); // Lógica para inspección técnica
         } else {
             // Lógica para inspección fitosanitaria: Activamos la vista del detalle
-            setIdFitoSeleccionada(idInspeccion);
+            setIdFitoSeleccionada(inspeccion.idinspeccion);
         }
     };
 
     // Función para limpiar el estado y regresar a la lista de pendientes
     const regresarALista = () => {
         setIdFitoSeleccionada(null);
-        setIdTecnicaSeleccionada(null);
+        setInspeccionTecnicaSeleccionada(null);
     }
 
     if (idFitoSeleccionada !== null) {
@@ -80,14 +80,17 @@ function InspeccionesPendientesTecnico(){
         );
     }
 
-    if (idTecnicaSeleccionada !== null) {
+    if (inspeccionTecnicaSeleccionada !== null) {
         return (
             <>
                 <div className="volver-container">
                     <button className="fab-back" onClick={regresarALista}><ArrowLeft size={26} /></button>
                 </div>
                 <InspeccionTecnica 
-                    idInspeccionSeleccionada={idTecnicaSeleccionada}
+                    idInspeccionSeleccionada={inspeccionTecnicaSeleccionada.idinspeccion}
+                    nombreLugar={
+                        inspeccionTecnicaSeleccionada.lugarNombre
+                    }
                     onVolver={regresarALista}
                 />
             </>
@@ -138,16 +141,21 @@ function InspeccionesPendientesTecnico(){
                             </td>
                         </tr>
                     ) : (
+
+                        /* CASO 4: Renderizado de filas */
                         inspecciones.map((inspeccion) => {
                             const tipo = inspeccion.solicitud_inspeccion?.tipo_inspeccion?.toLowerCase() || '';
                             const estadoInspeccion = inspeccion.solicitud_inspeccion?.estado?.toLowerCase() || '';
+                            // Evaluamos la clase de color base usando tu "if"
                             let claseBotonBase = '';
                             if (tipo === 'inspeccion tecnica') {
                                 claseBotonBase = 'btn-tecnica';
                             } else {
                                 claseBotonBase = 'btn-fitosanitaria';
                             }
+                            // Control de estado terminado o finalizado
                             const estaTerminada = estadoInspeccion === 'terminada' || estadoInspeccion === 'finalizada' || estadoInspeccion === 'terminado';
+                            // Si está terminada no le pasamos color extra para que el CSS maneje el estado disabled por defecto
                             const claseEstiloFinal = estaTerminada ? '' : claseBotonBase;
                             const textoBoton = estaTerminada ? 'Finalizada' : 'Iniciar';
                             return (
@@ -162,7 +170,7 @@ function InspeccionesPendientesTecnico(){
                                     <td>
                                         <button className={`btn-primary ${claseEstiloFinal}`}
                                             disabled={estaTerminada}
-                                            onClick={() => manejarAccionBotones(inspeccion.idinspeccion, tipo)}
+                                            onClick={() => manejarAccionBotones(inspeccion, tipo)}
                                         >{textoBoton}
                                         </button>
                                     </td>
@@ -175,4 +183,4 @@ function InspeccionesPendientesTecnico(){
         </div>
     );
 }
-export default InspeccionesPendientesTecnico; 
+export default InspeccionesPendientesTecnico;

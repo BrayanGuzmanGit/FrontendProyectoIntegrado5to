@@ -159,11 +159,12 @@ function Registro() {
     return (
         <div className="contenedor-pagina-registro">
             <div className="contenedor-logo-card">
+                <div className="card">
                 <header className="cabecera-logo">
                     <img src={logo} alt="Logo ICA" className="logo-principal" />
                 </header>
 
-            <div className="card">
+            
                 <main>
                     <h1 className="card-title">Registro</h1>
 

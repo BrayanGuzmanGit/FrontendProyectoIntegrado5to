@@ -106,14 +106,13 @@ function Login() {
   return (
     <div className="contenedor-pagina-login">
       <div className="contenedor-logo-card">
-
+        <div className="card">
         {/* Logo institucional */}
         <div className="encabezado-logo">
           <img src={logo} alt="Logo ICA" className="logo-principal" />
         </div>
 
         {/* Tarjeta del formulario */}
-        <div className="card">
           <h2 className="card-title">Iniciar Sesión</h2>
 
           {/*

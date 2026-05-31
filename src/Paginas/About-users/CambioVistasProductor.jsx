@@ -21,7 +21,7 @@ const SECCIONES = {
 
 function CambioVistasProductor() {
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-    const [seccionActiva, setSeccionActiva] = useState('perfil');
+    const [seccionActiva, setSeccionActiva] = useState('pendientes');
 
     const alternarSidebar = () => setIsSidebarOpen(prev => !prev);
 
