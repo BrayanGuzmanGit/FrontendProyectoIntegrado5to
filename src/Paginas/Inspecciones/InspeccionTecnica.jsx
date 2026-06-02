@@ -69,7 +69,6 @@ function InspeccionTecnica({ idInspeccionSeleccionada, nombreLugar }) {
             );
 
             const data = await respuesta.json();
-            
             if (!respuesta.ok) {
                 throw new Error(data.message || "Error al guardar");
             }

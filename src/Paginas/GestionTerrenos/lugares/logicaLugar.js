@@ -155,10 +155,16 @@ export const LogicaLugar = () => {
 
     // Para formatear los datos que se muestran en las tarjetas
     const obtenerDatos = (lugar) => { // Recibe datos del backend con "label" y "valor" para mostrar en la tarjeta
+        
+        // 1. Calculamos el área cultivada sumando la propiedad '.area' de cada lote anidado
+        const areaCultivadaCalculada = lugar.lotes?.reduce((total, lote) => {
+            return total + parseFloat(lote.area || 0);
+        }, 0).toFixed(2) || "0.00"; 
+
         return [/*la información que se ve apenas se cargan los lugares creados */
             { label: 'N° Registro ICA', valor: lugar.numero_registro },
             { label: 'Área Total', valor: (lugar.areaTotal || 0) + ' Ha' },
-            { label: 'Área Cultivada', valor: (lugar.areaCultivada || 0) + ' Ha' },
+            { label: 'Área Cultivada', valor: areaCultivadaCalculada + ' Ha' },
             { label: 'Predio Central', valor: lugar.predioCentral?.nombre || 'N/A' }
         ];
     };

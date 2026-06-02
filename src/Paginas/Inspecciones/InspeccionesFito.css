@@ -1,4 +1,6 @@
- /*CONTENEDOR PRINCIPAL Y TIPOGRAFÍA*/
+/* ==========================================================================
+   CONTENEDOR PRINCIPAL
+   ========================================================================== */
 .contenedor-inspecciones {
     padding: 20px;
     font-family: sans-serif;
@@ -6,12 +8,59 @@
     margin: 0 auto;
 }
 
- /*CABECERA GLOBAL ESTILO TABLA*/
+.contenedor-lote-fito {
+    max-width: 900px;
+}
+
+/* ==========================================================================
+   ESTADOS DE PANTALLA (cargando / error)
+   ========================================================================== */
+.estado-pantalla {
+    padding: 40px;
+    text-align: center;
+    font-size: 16px;
+    color: #718096;
+}
+
+.error-texto {
+    color: #e53935;
+    font-weight: 600;
+}
+
+/* ==========================================================================
+   BOTÓN VOLVER
+   ========================================================================== */
+.volver-container {
+    margin-bottom: 16px;
+}
+
+.fab-back {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    border: none;
+    background-color: #128f5f;
+    color: #fff;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.15s ease;
+}
+
+.fab-back:hover {
+    background-color: #0e7a50;
+    transform: scale(1.08);
+}
+
+/* ==========================================================================
+   CABECERA GLOBAL ESTILO TABLA (vista general)
+   ========================================================================== */
 .cabecera-global-grid {
     display: grid;
     grid-template-columns: 220px 1fr 1fr 1fr 1fr 1fr 100px;
     padding: 12px 20px;
-    background: rgb(18, 143, 95); /* Color verde base */
+    background: rgb(18, 143, 95);
     color: #fff;
     border-radius: 8px;
     font-weight: bold;
@@ -25,29 +74,33 @@
     text-align: center;
 }
 
-  /*ESTRUCTURA DE TARJETAS POR CULTIVO (GRID DE 2 COLUMNAS)*/
+/* ==========================================================================
+   TARJETAS POR CULTIVO (vista general)
+   ========================================================================== */
 .tarjeta-cultivo-bloque {
     display: grid;
     grid-template-columns: 220px 1fr;
     border-radius: 20px;
-    margin-bottom: 20px; 
+    margin-bottom: 20px;
     overflow: hidden;
-    box-shadow: var(--shadow);
-    border: var(--color-borde);
+    box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    border: 3px solid var(--color-borde);
     background-color: var(--color-fondo);
 }
 
 .tarjeta-cultivo-bloque .columna-cultivo-info {
     border-right: 1px solid var(--color-borde);
 }
+
 .tarjeta-cultivo-bloque .nombre-cultivo {
     color: var(--color-texto-destacado);
 }
+
 .tarjeta-cultivo-bloque .fila-subtotal-tarjeta {
     border-top: 1px solid var(--color-borde);
 }
 
- /*INTERCALADOS */
+/* Colores intercalados */
 .tarjeta-cultivo-bloque:nth-of-type(3n+1) {
     --color-borde: #fca5a5;
     --color-fondo: #fff5f5;
@@ -66,8 +119,7 @@
     --color-texto-destacado: #23918b;
 }
 
-
-/* Columna Izquierda: Info Fija del Cultivo */
+/* Columna izquierda */
 .columna-cultivo-info {
     padding: 20px;
     display: flex;
@@ -97,15 +149,13 @@
     font-style: italic;
 }
 
-/* Columna Derecha: Bloque contenedor de lotes */
+/* Columna derecha */
 .columna-lotes-listado {
     display: flex;
     flex-direction: column;
 }
 
-/* ==========================================================================
-   FILAS DE LOS LOTES E INSPECCIÓN
-   ========================================================================== */
+/* Filas de lotes */
 .fila-lote-registro {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr 100px;
@@ -114,14 +164,13 @@
     text-align: center;
     align-items: center;
     font-size: 14px;
-    color: var(--color-texto);
 }
 
 .fila-lote-registro .id-destacado {
     font-weight: 600;
 }
 
-/* Badges de estado */
+/* Badges */
 .badge-estado {
     padding: 4px 10px;
     border-radius: 20px;
@@ -139,7 +188,6 @@
     color: #9b1c1c;
 }
 
-/* Botón de acción interno */
 .btn-ver-lote {
     padding: 6px 14px;
     background-color: #fff;
@@ -147,9 +195,14 @@
     border-radius: 6px;
     cursor: pointer;
     font-weight: 500;
+    transition: background-color 0.15s ease;
 }
 
-/* Fila de Subtotal Interno */
+.btn-ver-lote:hover {
+    background-color: #f1f5f9;
+}
+
+/* Fila subtotal */
 .fila-subtotal-tarjeta {
     display: grid;
     grid-template-columns: 1fr 1fr 1fr 1fr 1fr 100px;
@@ -167,12 +220,12 @@
     color: #2d3748;
 }
 
-/* BARRA DE TOTAL GENERAL INFERIOR*/
-.barra-total-general{
+/* Barra total general */
+.barra-total-general {
     display: grid;
     grid-template-columns: 220px 1fr 1fr 1fr 1fr 1fr 100px;
     padding: 16px 20px;
-    background: var(--color-texto);
+    background: #1a202c;
     color: #fff;
     border-radius: 12px;
     font-weight: bold;
@@ -183,4 +236,414 @@
 
 .barra-total-general .txt-izquierda {
     text-align: left;
+}
+
+/* ==========================================================================
+   CABECERA DEL LOTE (vista detalle)
+   ========================================================================== */
+.cabecera-lote-card {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    border: 2px solid #fca5a5;
+    border-radius: 16px;
+    overflow: hidden;
+    background-color: #fff5f5;
+    margin-bottom: 24px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.07);
+}
+
+/* Bloque izquierdo: imagen + nombres del cultivo */
+.bloque-cultivo-cabecera {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 18px;
+    min-width: 160px;
+    background-color: #fff5f5;
+    text-align: center;
+    gap: 8px;
+}
+
+.img-cultivo-lote {
+    width: 120px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 10px;
+    border: 2px solid #fca5a5;
+}
+
+.texto-cultivo-cabecera {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.nombre-cultivo-lote {
+    font-weight: 700;
+    font-size: 15px;
+    color: #e53935;
+}
+
+.cientifico-cultivo-lote {
+    font-size: 12px;
+    font-style: italic;
+    color: #718096;
+}
+
+/* Separador vertical entre los dos bloques */
+.separador-cabecera {
+    width: 2px;
+    background-color: #fca5a5;
+    align-self: stretch;
+}
+
+/* Bloque central: título lote + campos */
+.bloque-central-cabecera {
+    flex: 1;
+    padding: 20px 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    background-color: #fff;
+}
+
+.titulo-lote {
+    font-size: 26px;
+    font-weight: 700;
+    color: #287e48;
+    margin: 0;
+}
+
+/* Campos del formulario */
+.campo-formulario-lote {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.label-campo {
+    font-size: 14px;
+    font-weight: 600;
+    color: #2d3748;
+}
+
+.input-con-tooltip {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    
+}
+
+.input-lote {
+    padding: 6px 10px;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    font-size: 18px;
+    color: #4a5568;
+    background-color: #f8fafc;
+    outline: none;
+    transition: border-color 0.2s ease;
+    max-width: 320px;
+}
+
+.input-lote:focus {
+    border-color: #128f5f;
+}
+
+.input-numero {
+    max-width: 160px;
+}
+
+/* Tooltip verde debajo del input de estado fenológico */
+.tooltip-fenologico {
+    font-size: 14px;
+    color: #fff;
+    background-color: #128f5f;
+    border-radius: 4px;
+    padding: 4px 8px;
+    max-width: 340px;
+    line-height: 1.4;
+}
+
+/* ==========================================================================
+   SECCIÓN DE PLAGAS
+   ========================================================================== */
+.seccion-plagas-card {
+    border: 2px solid #fca5a5;
+    border-radius: 16px;
+    padding: 20px 24px;
+    background-color: #fff5f5;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+}
+
+.titulo-seccion-plagas {
+    font-size: 20px;
+    font-weight: 700;
+    color: #287e48;
+    text-align: center;
+    margin: 0 0 4px 0;
+}
+
+.subtitulo-plagas {
+    font-size: 13px;
+    color: #4a5568;
+    text-align: center;
+    margin: 0 0 20px 0;
+}
+
+.sin-plagas {
+    text-align: center;
+    color: #718096;
+    font-size: 14px;
+    padding: 20px 0;
+}
+
+/* Fila de plagas (máx 3 por fila) */
+.fila-plagas {
+    display: flex;
+    gap: 20px;
+    justify-content: flex-start;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+}
+
+/* Tarjeta individual de plaga */
+.tarjeta-plaga {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    min-width: 140px;
+    max-width: 180px;
+    flex: 1;
+}
+
+.nombre-plaga {
+    font-weight: 700;
+    font-size: 14px;
+    color: #e53935;
+    text-align: center;
+}
+
+.cientifico-plaga {
+    font-size: 11px;
+    font-style: italic;
+    color: #718096;
+    text-align: center;
+    margin-bottom: 4px;
+}
+
+.descripcion-plaga {
+    font-size: 10px;
+    color: #718096;
+    text-align: center;
+    line-height: 1.3;
+    margin-bottom: 4px;
+    max-width: 180px;
+}
+
+/* Contenedor imagen + controles superpuestos */
+.contenedor-imagen-plaga {
+    position: relative;
+    width: 140px;
+    height: 110px;
+}
+
+.img-plaga {
+    width: 140px;
+    height: 110px;
+    object-fit: cover;
+    border-radius: 10px;
+    display: block;
+}
+
+.placeholder-plaga {
+    width: 140px;
+    height: 110px;
+    border-radius: 10px;
+    background-color: #f1f5f9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 36px;
+}
+
+/* Controles del contador superpuestos a la derecha */
+.controles-contador {
+    position: absolute;
+    top: 50%;
+    right: -18px;
+    transform: translateY(-50%);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.btn-contador {
+    width: 30px;
+    height: 30px;
+    border: none;
+    border-radius: 50%;
+    font-size: 18px;
+    font-weight: bold;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    line-height: 1;
+    transition: transform 0.1s ease, opacity 0.2s ease;
+}
+
+.btn-contador:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.btn-contador.incrementar {
+    background-color: #22c55e;
+    color: #fff;
+}
+
+.btn-contador.incrementar:hover:not(:disabled) {
+    background-color: #16a34a;
+    transform: scale(1.1);
+}
+
+.btn-contador.decrementar {
+    background-color: #ef4444;
+    color: #fff;
+}
+
+.btn-contador.decrementar:hover:not(:disabled) {
+    background-color: #dc2626;
+    transform: scale(1.1);
+}
+
+.valor-contador {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1a202c;
+    min-width: 24px;
+    text-align: center;
+    background-color: #fff;
+    border-radius: 4px;
+    padding: 1px 4px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.12);
+}
+
+/* ==========================================================================
+   BARRA DE INFESTACIÓN
+   ========================================================================== */
+.bloque-infestacion {
+    margin-top: 24px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+
+.label-infestacion {
+    font-size: 14px;
+    font-weight: 600;
+    color: #2d3748;
+    white-space: nowrap;
+}
+
+.barra-wrapper {
+    flex: 1;
+    min-width: 200px;
+    height: 18px;
+    background-color: #e2e8f0;
+    border-radius: 20px;
+    overflow: visible;
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.barra-progreso {
+    height: 100%;
+    border-radius: 20px;
+    min-width: 4px;
+}
+
+.porcentaje-label {
+    margin-left: 10px;
+    font-weight: 700;
+    font-size: 14px;
+    white-space: nowrap;
+}
+
+/* ==========================================================================
+   ALERTA DE INFESTACIÓN ALTA
+   ========================================================================== */
+.alerta-infestacion {
+    margin-top: 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background-color: #fff3cd;
+    border: 1px solid #f59e0b;
+    border-radius: 8px;
+    padding: 12px 16px;
+    color: #92400e;
+    font-size: 14px;
+}
+
+/* ==========================================================================
+   MENSAJES FEEDBACK
+   ========================================================================== */
+.mensaje-error {
+    background-color: #fde8e8;
+    border: 1px solid #fca5a5;
+    color: #9b1c1c;
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 14px;
+    margin-bottom: 12px;
+}
+
+.mensaje-exito {
+    background-color: #def7ec;
+    border: 1px solid #6ee7b7;
+    color: #065f46;
+    border-radius: 8px;
+    padding: 12px 16px;
+    font-size: 14px;
+    margin-bottom: 12px;
+}
+
+/* ==========================================================================
+   BOTÓN GUARDAR
+   ========================================================================== */
+.bloque-botones-finales {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 8px;
+}
+
+.btn-final.guardar {
+    padding: 12px 32px;
+    background-color: #128f5f;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease, transform 0.15s ease;
+}
+
+.btn-final.guardar:hover:not(:disabled) {
+    background-color: #0e7a50;
+    transform: scale(1.02);
+}
+
+.btn-final.guardar:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
 }

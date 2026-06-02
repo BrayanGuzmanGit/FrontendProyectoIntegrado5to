@@ -22,7 +22,7 @@ const SECCIONES = {
 
 function CambioVistasProductor() {
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
-    const [seccionActiva, setSeccionActiva] = useState('SolicitudesInspeccion');
+    const [seccionActiva, setSeccionActiva] = useState('solicitudesInspeccion');
 
     const alternarSidebar = () => setIsSidebarOpen(prev => !prev);
 

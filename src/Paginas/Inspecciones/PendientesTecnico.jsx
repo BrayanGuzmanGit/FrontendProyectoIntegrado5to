@@ -9,10 +9,10 @@ function InspeccionesPendientesTecnico(){
     const [inspecciones, setInspecciones] = useState([]);
     const [cargando, setCargando] = useState(true);
     const [error, setError] = useState(null);
-    const [idFitoSeleccionada, setIdFitoSeleccionada] = useState(null);
     const [inspeccionTecnicaSeleccionada, setInspeccionTecnicaSeleccionada] = useState(null);
+    const [inspeccionFitoSeleccionada, setInspeccionFitoSeleccionada] = useState(null);
     const [filtroTipo, setFiltroTipo] = useState('');
-    const [filtroEstado, setFiltroEstado] = useState('');         // 🆕
+    const [filtroEstado, setFiltroEstado] = useState('');        
 
     const verPendientes = async () => {
         const token = localStorage.getItem('token');
@@ -42,7 +42,7 @@ function InspeccionesPendientesTecnico(){
     }, []);
 
     // ── Filtrar y ordenar ────────────────────────────────────────────────────
-    const prioridadEstado = { 'en proceso': 1, 'pendiente': 2 };   // 🆕
+    const prioridadEstado = { 'en proceso': 1, 'pendiente': 2 };   
 
     const solicitudesOrdenadas = [...inspecciones]
         .filter(s => {
@@ -50,36 +50,37 @@ function InspeccionesPendientesTecnico(){
             const tipo   = s.solicitud_inspeccion?.tipo_inspeccion?.toLowerCase() || '';
             const estado = s.estado?.toLowerCase() || '';
             const coincideTipo   = filtroTipo   === '' || tipo   === filtroTipo;
-            const coincideEstado = filtroEstado === '' || estado === filtroEstado;  // 🆕
+            const coincideEstado = filtroEstado === '' || estado === filtroEstado;  
             return coincideTipo && coincideEstado;
         })
         .sort((a, b) => {
             const estadoA = a.estado?.toLowerCase() || '';
             const estadoB = b.estado?.toLowerCase() || '';
-            return (prioridadEstado[estadoA] || 999) - (prioridadEstado[estadoB] || 999); // 🆕 "en proceso" primero
+            return (prioridadEstado[estadoA] || 999) - (prioridadEstado[estadoB] || 999); // "en proceso" primero
         });
 
     const manejarAccionBotones = (inspeccion, tipo) => {
         if (tipo === 'inspeccion tecnica') {
             setInspeccionTecnicaSeleccionada(inspeccion);
         } else {
-            setIdFitoSeleccionada(inspeccion.idinspeccion);
+            setInspeccionFitoSeleccionada(inspeccion);
         }
     };
 
     const regresarALista = () => {
-        setIdFitoSeleccionada(null);
         setInspeccionTecnicaSeleccionada(null);
+        setInspeccionFitoSeleccionada(null);
     };
 
-    if (idFitoSeleccionada !== null) {
+    if (inspeccionFitoSeleccionada !== null) {
         return (
             <>
                 <div className="volver-container">
                     <button className="fab-back" onClick={regresarALista}><ArrowLeft size={26} /></button>
                 </div>
                 <InspeccionFitosanitariaGeneral
-                    idInspeccionSeleccionada={idFitoSeleccionada}
+                    idLugarProduccion={inspeccionFitoSeleccionada.solicitud_inspeccion?.idlugarproduccion}
+                    nombreLugar={inspeccionFitoSeleccionada.lugarNombre}
                     onVolver={regresarALista}
                 />
             </>

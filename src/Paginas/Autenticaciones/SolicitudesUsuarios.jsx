@@ -168,7 +168,6 @@ function UsuariosFuncionario() {
                         <th>Apellido</th>
                         <th>Correo electrónico</th>
                         <th>Rol</th>
-                        <th>Fecha de solicitud</th>
                         <th>Estado</th>
                         <th>Acciones</th>
                     </tr>
@@ -190,7 +189,6 @@ function UsuariosFuncionario() {
                             <td>{usuario.apellido}</td>
                             <td>{usuario.correo_electronico || usuario.correo || '—'}</td>
                             <td>{usuario.rol}</td>
-                            <td>{usuario.fecha || usuario.createdAt || '—'}</td>
                             <td className={`estado ${usuario.estado?.toString().toLowerCase()}`}>
                                 {usuario.estado}
                             </td>

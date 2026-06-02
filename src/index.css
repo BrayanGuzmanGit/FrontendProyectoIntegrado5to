@@ -5,7 +5,6 @@
   --verde-hover-suave: #1d743a; /*hover de botones*/
   --verde-hover-fuerte: #1a5e30; /*hover más fuerte para botones*/
 
-
   --color-texto: #161616; /*texto general*/
   --texto-secundario: #555; /*texto secundario*/
   --texto-disabled: #777; /*texto de campos deshabilitados*/
@@ -80,6 +79,12 @@ body {
   text-align: left;
   font-weight: 600;
 }
+
+.label-base-center {
+  text-align: center;
+}
+
+
 
 .input-base { /* clase base para inputs y selects */
   width: 100%;
@@ -228,6 +233,27 @@ body {
 .texto-registro-login a:hover {
   color: var(--verde-ica);
   text-decoration: underline;
+}
+
+.btn-primary.btn-tecnica{
+  background: rgb(134, 19, 119);
+
+}
+
+.btn-primary.btn-tecnica:hover:not(:disabled) {
+  opacity: 0.9;
+  transform: translateY(-1px);
+  background:  rgb(95, 11, 84);;
+}
+
+.btn-primary.btn-fitosanitaria{
+  background: rgb(18, 143, 95);
+}
+
+.btn-primary.btn-fitosanitaria:hover:not(:disabled) {
+  opacity: 0.9;
+  transform: translateY(-1px);
+  background:  rgb(11, 95, 84);
 }
 
 /*Responsive*/
