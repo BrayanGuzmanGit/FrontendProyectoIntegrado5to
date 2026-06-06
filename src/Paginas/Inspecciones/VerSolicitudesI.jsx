@@ -61,6 +61,7 @@ function VerSolicitudesI() {
                 return;
             }
             const data = await response.json();
+            console.log("Solicitudes recibidas:", data.data);
             setSolicitudes(data.data || []);
         } catch (err) {
             setError(err.message);

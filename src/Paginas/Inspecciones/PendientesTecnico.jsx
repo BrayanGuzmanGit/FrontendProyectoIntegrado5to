@@ -67,6 +67,10 @@ function InspeccionesPendientesTecnico(){
         }
     };
 
+    const refrescarInspecciones = () => {
+        verPendientes();
+    };
+
     const regresarALista = () => {
         setInspeccionTecnicaSeleccionada(null);
         setInspeccionFitoSeleccionada(null);
@@ -79,9 +83,9 @@ function InspeccionesPendientesTecnico(){
                     <button className="fab-back" onClick={regresarALista}><ArrowLeft size={26} /></button>
                 </div>
                 <InspeccionFitosanitariaGeneral
-                    idLugarProduccion={inspeccionFitoSeleccionada.solicitud_inspeccion?.idlugarproduccion}
-                    nombreLugar={inspeccionFitoSeleccionada.lugarNombre}
+                    inspeccionCompleta={inspeccionFitoSeleccionada}
                     onVolver={regresarALista}
+                    onRefresh={refrescarInspecciones}
                 />
             </>
         );

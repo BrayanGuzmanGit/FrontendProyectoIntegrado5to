@@ -647,3 +647,372 @@
     opacity: 0.5;
     cursor: not-allowed;
 }
+
+/* ==========================================================================
+   NUEVOS ESTILOS PARA INSPECCION FITOSANITARIA GENERAL
+   ========================================================================== */
+
+/* Cabecera de la inspección general */
+.cabecera-inspeccion-fito {
+    background: linear-gradient(135deg, #128f5f 0%, #0e7a50 100%);
+    color: #fff;
+    padding: 24px;
+    border-radius: 12px;
+    margin-bottom: 24px;
+    box-shadow: 0 4px 12px rgba(18, 143, 95, 0.2);
+}
+
+.info-inspeccion-fito {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 16px;
+    margin-top: 12px;
+    font-size: 14px;
+}
+
+.info-inspeccion-fito p {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+/* Badge de estado */
+.estado-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: bold;
+    margin-left: 8px;
+    text-transform: uppercase;
+}
+
+.estado-badge.pendiente {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: #fff;
+}
+
+.estado-badge.terminada {
+    background-color: #4ade80;
+    color: #065f46;
+}
+
+/* Barra de progreso de lotes */
+.barra-progreso-lotes {
+    background-color: #f8fafc;
+    border: 2px solid #e2e8f0;
+    border-radius: 12px;
+    padding: 16px 20px;
+    margin-bottom: 20px;
+}
+
+.stats-progreso {
+    display: flex;
+    gap: 24px;
+    margin-bottom: 12px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.stat-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: #4a5568;
+}
+
+.icon-success {
+    color: #22c55e;
+}
+
+.icon-warning {
+    color: #f59e0b;
+}
+
+.barra-progreso-visual {
+    width: 100%;
+    height: 8px;
+    background-color: #e2e8f0;
+    border-radius: 20px;
+    overflow: hidden;
+}
+
+.barra-relleno {
+    height: 100%;
+    background: linear-gradient(90deg, #128f5f 0%, #22c55e 100%);
+    border-radius: 20px;
+    transition: width 0.4s ease;
+}
+
+/* Cabecera de tabla de lotes */
+.cabecera-global-grid-fito {
+    display: grid;
+    grid-template-columns: 0.8fr 0.8fr 0.6fr 0.7fr 1fr 0.8fr;
+    padding: 14px 16px;
+    background: #128f5f;
+    color: #fff;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 13px;
+    margin-bottom: 12px;
+    text-align: center;
+    align-items: center;
+}
+
+/* Tarjeta de lote */
+.tarjeta-lote-inspeccion {
+    background-color: #fff;
+    border: 1px solid #e2e8f0;
+    border-radius: 10px;
+    padding: 0;
+    margin-bottom: 12px;
+    overflow: hidden;
+    transition: box-shadow 0.2s ease, border-color 0.2s ease;
+}
+
+.tarjeta-lote-inspeccion:hover {
+    box-shadow: 0 4px 12px rgba(18, 143, 95, 0.12);
+    border-color: #128f5f;
+}
+
+/* Fila de lote */
+.fila-lote-registro-fito {
+    display: grid;
+    grid-template-columns: 0.8fr 0.8fr 0.6fr 0.7fr 1fr 0.8fr;
+    padding: 14px 16px;
+    text-align: center;
+    align-items: center;
+    font-size: 13px;
+    border-bottom: 1px solid #f1f5f9;
+}
+
+.fila-lote-registro-fito:last-child {
+    border-bottom: none;
+}
+
+.col-cultivo {
+    text-align: left;
+}
+
+.lote-numero {
+    font-weight: 600;
+    color: #128f5f;
+    font-size: 14px;
+}
+
+.lote-detalle {
+    font-size: 12px;
+    color: #718096;
+    margin-top: 2px;
+}
+
+.badge-estado-fito {
+    display: inline-block;
+    padding: 6px 10px;
+    border-radius: 6px;
+    font-size: 12px;
+    font-weight: 600;
+    text-align: center;
+}
+
+.badge-estado-fito.completado {
+    background-color: #def7ec;
+    color: #065f46;
+}
+
+.badge-estado-fito.pendiente {
+    background-color: #fce7f3;
+    color: #831843;
+}
+
+/* Progreso de plagas */
+.progreso-plagas-detalle {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+}
+
+.porcentaje-riesgo {
+    font-weight: 700;
+    font-size: 14px;
+    color: #128f5f;
+}
+
+.detalles-plagas {
+    font-size: 11px;
+    color: #718096;
+}
+
+.sin-conteos {
+    color: #a0aec0;
+    font-size: 12px;
+}
+
+/* Botón editar lote */
+.btn-editar-lote {
+    padding: 6px 12px;
+    background-color: #f8fafc;
+    border: 1px solid #cbd5e1;
+    border-radius: 6px;
+    cursor: pointer;
+    font-weight: 500;
+    font-size: 13px;
+    transition: all 0.2s ease;
+}
+
+.btn-editar-lote.activo:hover {
+    background-color: #128f5f;
+    color: #fff;
+    border-color: #128f5f;
+}
+
+.btn-editar-lote.completado {
+    background-color: #def7ec;
+    border-color: #6ee7b7;
+    color: #065f46;
+}
+
+.btn-editar-lote.completado:hover {
+    background-color: #b7e4c7;
+}
+
+/* Botón terminar inspección */
+.btn-final.terminar-inspeccion {
+    padding: 12px 32px;
+    background-color: #128f5f;
+    color: #fff;
+    border: none;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.btn-final.terminar-inspeccion.activo:hover {
+    background-color: #0e7a50;
+    transform: scale(1.02);
+}
+
+.btn-final.terminar-inspeccion.deshabilitado {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.btn-final.terminar-inspeccion:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Botón secundario */
+.btn-final.secundario {
+    padding: 12px 24px;
+    background-color: #f1f5f9;
+    color: #4a5568;
+    border: 1px solid #cbd5e1;
+    border-radius: 10px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-left: 8px;
+}
+
+.btn-final.secundario:hover:not(:disabled) {
+    background-color: #e2e8f0;
+    border-color: #94a3b8;
+}
+
+.btn-final.secundario:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+/* Advertencia de terminar inspección */
+.advertencia-terminar {
+    background-color: #fef3c7;
+    border: 1px solid #fbbf24;
+    border-radius: 8px;
+    padding: 12px 16px;
+    color: #92400e;
+    font-size: 14px;
+    margin-bottom: 12px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.advertencia-terminar p {
+    margin: 0;
+}
+
+/* Sin lotes */
+.sin-lotes {
+    text-align: center;
+    color: #718096;
+    padding: 40px 20px;
+    font-size: 14px;
+}
+
+/* Bloque botones finales mejorado */
+.bloque-botones-finales {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 24px;
+}
+
+/* Mejoras para tarjeta de plaga con conteo */
+.tarjeta-plaga-conteo {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    min-width: 140px;
+    max-width: 180px;
+    flex: 1;
+}
+
+/* Mensajes mejorados */
+.mensaje-error {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.mensaje-exito {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Responsive para dispositivos móviles */
+@media (max-width: 768px) {
+    .info-inspeccion-fito {
+        grid-template-columns: 1fr;
+    }
+
+    .stats-progreso {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .cabecera-global-grid-fito {
+        grid-template-columns: 1fr;
+    }
+
+    .fila-lote-registro-fito {
+        grid-template-columns: 1fr;
+        gap: 8px;
+    }
+
+    .col-cultivo {
+        text-align: center;
+    }
+
+    .btn-final.secundario {
+        margin-left: 0;
+    }
+}

@@ -1,212 +1,314 @@
-import { useEffect, useState } from "react";
-import { ArrowLeft } from "lucide-react";
+import { useState, useEffect } from "react";
+import { CheckCircle, Clock, AlertCircle } from "lucide-react";
+import BASE_URL_INSPECTIONS from '@/services/api-inspections';
 import BASE_URL from '@/services/api-entidades';
 import "./InspeccionesFito.css";
 import "@/Paginas/GestionTerrenos/GestionarTerrenos.css";
 import InspeccionFitosanitariaLote from "./InspeccionFitosanitariaLote";
 
-function InspeccionFitosanitariaGeneral({ idLugarProduccion, nombreLugar}) {
+function InspeccionFitosanitariaGeneral({ inspeccionCompleta, onVolver, onRefresh }) {
 
-    const [datosLugar, setDatosLugar] = useState(null);
-    const [cargando, setCargando] = useState(true);
-    const [error, setError] = useState(null);
     const [loteSeleccionado, setLoteSeleccionado] = useState(null);
+    const [terminandoInspeccion, setTerminandoInspeccion] = useState(false);
+    const [error, setError] = useState(null);
+    const [successMessage, setSuccessMessage] = useState(null);
+    const [loteActualizado, setLoteActualizado] = useState(null);
+    const [lotes, setLotes] = useState([]);
+    const [cargandoLotes, setCargandoLotes] = useState(true);
 
-    const obtenerDatosLugar = async () => {
+    // Datos de la inspección
+    const idinspeccion = inspeccionCompleta?.idinspeccion;
+    const idlugarproduccion = inspeccionCompleta?.solicitud_inspeccion?.idlugarproduccion;
+    const nombreLugar = inspeccionCompleta?.lugarNombre;
+    const nombreProductor = inspeccionCompleta?.productorNombre;
+    const tecnicoNombre = inspeccionCompleta?.tecnicoNombre;
+
+    // ─── Cargar lotes del lugar ──────────────────────────────────────────
+    useEffect(() => {
+        const obtenerLotes = async () => {
+            const token = localStorage.getItem('token');
+            try {
+                setCargandoLotes(true);
+                setError(null);
+                
+                const respuesta = await fetch(
+                    `${BASE_URL}/locations/lotes/${idlugarproduccion}`,
+                    {
+                        method: 'GET',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Authorization': 'Bearer ' + token
+                        }
+                    }
+                );
+
+                if (!respuesta.ok) {
+                    const errorData = await respuesta.json();
+                    throw new Error(errorData.message || `Error ${respuesta.status}`);
+                }
+
+                const data = await respuesta.json();
+                const lotesData = data.data || [];
+                
+                // Combinar lotes con datos de inspeccion_lote (estadoFenologico, conteo_plagas, etc)
+                const lotesCombinados = lotesData.map(lote => {
+                    const inspeccionLote = inspeccionCompleta?.inspeccion_lote?.find(
+                        il => il.uidlote === lote.id
+                    );
+                    return {
+                        ...lote,
+                        // Datos específicos de la inspección
+                        estadoFenologico: inspeccionLote?.estadoFenologico,
+                        plantasencontradas: inspeccionLote?.plantasencontradas,
+                        estado: inspeccionLote?.estado,
+                        conteo_plagas: inspeccionLote?.conteo_plagas || []
+                    };
+                });
+                console.log('Lotes combinados con datos de inspección:', lotesCombinados);
+                setLotes(lotesCombinados);
+                setCargandoLotes(false);
+
+            } catch (err) {
+                console.error('Error cargando lotes:', err);
+                setError(err.message);
+                setCargandoLotes(false);
+            }
+        };
+
+        if (idlugarproduccion) {
+            obtenerLotes();
+        }
+    }, [idlugarproduccion, inspeccionCompleta]);
+
+    // ─── Calcular si todos los lotes están terminados ─────────────────────
+    const todosLotesTerminados = lotes.length > 0 && 
+        lotes.every(lote => lote.estado?.toLowerCase() === 'terminada');
+
+    const lotesTerminados = lotes.filter(l => l.estado?.toLowerCase() === 'terminada').length;
+    const lotesTotales = lotes.length;
+
+    // ─── Terminar inspección fitosanitaria ───────────────────────────────
+    const terminarInspeccion = async () => {
         const token = localStorage.getItem('token');
         try {
-            setCargando(true);
-            setError(null);
-            const respuesta = await fetch(`${BASE_URL}/locations/lotes/${idLugarProduccion}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Authorization': 'Bearer ' + token
-                }
-            });
-
-            if (!respuesta.ok) {
-                throw new Error('No se pudo obtener información del formulario de Inspección Fitosanitaria.');
+            if (!window.confirm('¿Está seguro que desea terminar esta inspección fitosanitaria? Esta acción no se puede deshacer.')) {
+                return;
             }
 
+            setTerminandoInspeccion(true);
+            setError(null);
+
+            const respuesta = await fetch(
+                `${BASE_URL_INSPECTIONS}/fitosanitaria/${idinspeccion}/terminar`,
+                {
+                    method: 'PATCH',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': 'Bearer ' + token
+                    },
+                    body: JSON.stringify({ estado: 'Terminada' })
+                }
+            );
+
             const data = await respuesta.json();
-            console.log(JSON.stringify(data, null, 2));
-            setDatosLugar(data.data || data);
-            setCargando(false);
+            if (!respuesta.ok) {
+                throw new Error(data.message || 'Error al terminar la inspección');
+            }
+
+            setSuccessMessage('✓ Inspección fitosanitaria completada exitosamente');
+            setTimeout(() => {
+                if (onRefresh) onRefresh();
+                onVolver();
+            }, 2000);
 
         } catch (err) {
-            console.error("Error cargando formulario:", err);
+            console.error('Error terminando inspección:', err);
             setError(err.message);
-            setCargando(false);
+        } finally {
+            setTerminandoInspeccion(false);
         }
     };
 
-    useEffect(() => {
-        if (idLugarProduccion) {
-            obtenerDatosLugar();
-        }
-    }, [idLugarProduccion]);
+    // ─── Al guardar un lote, actualizar la data local ─────────────────────
+    const handleLoteGuardado = (loteActualizadoData) => {
+        setLoteActualizado(loteActualizadoData);
+        setLoteSeleccionado(null);
+    };
 
-    if (cargando) return <div>Cargando datos del formulario...</div>;
-    if (error) return <div className="error-texto">Error: {error}</div>;
-    if (!datosLugar || datosLugar.length === 0) {
-        return <div>No hay cultivos registrados para este lugar.</div>;
-    }
-
+    // ─── Si un lote fue seleccionado, mostrar el componente de edición ────
     if (loteSeleccionado) {
         return (
             <InspeccionFitosanitariaLote
-                idLugarProduccion={idLugarProduccion}
-                idLote={loteSeleccionado.id}
-                numero_lote={loteSeleccionado.numero_lote}
-                id_cultivo={loteSeleccionado.uidcultivo}
-                nombreCultivo={loteSeleccionado.nombreCultivo}
-                nombreCientifico={loteSeleccionado.nombreCientifico}
-                imagenCultivo={loteSeleccionado.url_img}
+                idinspeccion={idinspeccion}
+                lote={loteSeleccionado}
                 onVolver={() => setLoteSeleccionado(null)}
+                onGuardado={handleLoteGuardado}
             />
         );
     }
 
-    // Agrupar lotes por cultivo
-    const cultivosAgrupados = datosLugar.reduce((grupos, lote) => {
-        const clave = lote.cultivo?.nombre_comun || 'Sin cultivo';
-        if (!grupos[clave]) {
-            grupos[clave] = {
-                nombre_comun: lote.cultivo?.nombre_comun,
-                nombre_cientifico: lote.cultivo?.nombre_cientifico,
-                url_img: lote.cultivo?.url_img,
-                lotes: []
-            };
-        }
-        grupos[clave].lotes.push(lote);
-        return grupos;
-    }, {});
-
-    const cultivosArray = Object.values(cultivosAgrupados);
-
-    // Totales generales
-    const totalExtensionGeneral = datosLugar.reduce(
-        (total, lote) => total + parseFloat(lote.area || 0), 0
-    ).toFixed(2);
-
-    const totalPlantasGeneral = datosLugar.reduce(
-        (total, lote) => total + parseInt(lote.cantidad_plantas || 0), 0
-    );
-
+    // ─── Vista principal: listado de lotes ───────────────────────────────
     return (
         <div className="contenedor-inspecciones">
-            <h2 className="card-title">
-                Inspección del Lugar: {nombreLugar}
-            </h2>
-
-            {/* Cabecera */}
-            <div className="cabecera-global-grid">
-                <div className="txt-izquierda">Cultivo</div>
-                <div>Lote</div>
-                <div>Fecha Siembra</div>
-                <div>Plantas</div>
-                <div>Área [Ha]</div>
-                <div>Inspección</div>
-                <div>Acción</div>
+            
+            {/* Cabecera general */}
+            <div className="cabecera-inspeccion-fito">
+                <div>
+                    <h2 className="card-title">
+                        Inspección Fitosanitaria: {nombreLugar}
+                    </h2>
+                    <div className="info-inspeccion-fito">
+                        <p><strong>Productor:</strong> {nombreProductor}</p>
+                        <p><strong>Técnico asignado:</strong> {tecnicoNombre}</p>
+                        <p><strong>Estado general:</strong> 
+                            <span className={`estado-badge ${inspeccionCompleta?.estado?.toLowerCase()}`}>
+                                {inspeccionCompleta?.estado}
+                            </span>
+                        </p>
+                    </div>
+                </div>
             </div>
 
-            {/* BLOQUES POR CULTIVO */}
-            {cultivosArray.map((cultivo, index) => {
+            {/* Barra de progreso ─────────────────────────────────────────────*/}
+            <div className="barra-progreso-lotes">
+                <div className="stats-progreso">
+                    <span className="stat-item">
+                        <CheckCircle size={20} className="icon-success" />
+                        {lotesTerminados} de {lotesTotales} lotes completados
+                    </span>
+                    <span className="stat-item">
+                        <Clock size={20} className="icon-warning" />
+                        {lotesTotales - lotesTerminados} lotes pendientes
+                    </span>
+                </div>
+                <div className="barra-progreso-visual">
+                    <div
+                        className="barra-relleno"
+                        style={{
+                            width: `${lotesTotales > 0 ? (lotesTerminados / lotesTotales) * 100 : 0}%`,
+                            backgroundColor: todosLotesTerminados ? '#4caf50' : '#2196F3'
+                        }}
+                    />
+                </div>
+            </div>
 
-                const subtotalPlantas = cultivo.lotes.reduce(
-                    (sum, l) => sum + parseInt(l.cantidad_plantas || 0), 0
-                );
+            {/* Mensajes de feedback ───────────────────────────────────────────*/}
+            {error && <div className="mensaje-error"><AlertCircle size={20} /> {error}</div>}
+            {successMessage && <div className="mensaje-exito"><CheckCircle size={20} /> {successMessage}</div>}
 
-                const subtotalExtension = cultivo.lotes.reduce(
-                    (sum, l) => sum + parseFloat(l.area || 0), 0
-                ).toFixed(2);
+            {/* Cabecera de tabla ──────────────────────────────────────────────*/}
+            <div className="cabecera-global-grid-fito">
+                <div className="col-cultivo">Cultivo / Lote</div>
+                <div className="col-fenologico">Est. Fenológico</div>
+                <div className="col-plantas">Plantas</div>
+                <div className="col-estado">Estado</div>
+                <div className="col-progreso">Progreso Plagas</div>
+                <div className="col-accion">Acción</div>
+            </div>
 
-                return (
-                    <div key={index} className="tarjeta-cultivo-bloque">
+            {/* Listado de lotes ──────────────────────────────────────────────*/}
+            {cargandoLotes ? (
+                <div className="sin-lotes">
+                    <p>Cargando lotes...</p>
+                </div>
+            ) : lotes.length === 0 ? (
+                <div className="sin-lotes">
+                    <p>No hay lotes registrados para esta inspección.</p>
+                </div>
+            ) : (
+                lotes.map((lote) => {
+                    const conteosPlagas = lote.conteo_plagas || [];
+                    const totalPlantasInfestadas = conteosPlagas.reduce(
+                        (sum, c) => sum + (c.plantasinfestadas || 0),
+                        0
+                    );
+                    const porcentajeInfestacion = lote.plantasencontradas > 0
+                        ? ((totalPlantasInfestadas / lote.plantasencontradas) * 100).toFixed(1)
+                        : 0;
 
-                        {/* Columna izquierda: nombre + imagen */}
-                        <div className="columna-cultivo-info">
-                            <div className="nombre-cultivo">
-                                {cultivo.nombre_comun}
-                            </div>
-                            <div className="cientifico-cultivo">
-                                {cultivo.nombre_cientifico || ''}
-                            </div>
-                            {cultivo.url_img && (
-                                <div className="img-cultivo">
-                                    <img className="img-cultivo" src={cultivo.url_img} alt={cultivo.nombre_comun} />
+                    const estaTerminado = lote.estado?.toLowerCase() === 'terminada';
+                    const tieneConteos = conteosPlagas.length > 0;
+
+                    return (
+                        <div key={lote.id} className="tarjeta-lote-inspeccion">
+
+                            {/* Información del lote */}
+                            <div className="fila-lote-registro-fito">
+
+                                {/* Cultivo / Lote */}
+                                <div className="col-cultivo">
+                                    <div className="lote-numero">
+                                        Lote {lote.id?.substring(0, 8)}
+                                    </div>
+                                    <div className="lote-detalle">
+                                        {lote.estadoFenologico ? `Estado: ${lote.estadoFenologico}` : 'Sin detalles'}
+                                    </div>
                                 </div>
-                            )}
-                        </div>
 
-                        {/* Columna derecha: filas de lotes + subtotal */}
-                        <div className="columna-lotes-listado">
-
-                            {cultivo.lotes.map((lote) => (
-                                <div key={lote.id} className="fila-lote-registro">
-
-                                    <div className="id-destacado">
-                                        {lote.numero_lote}
-                                    </div>
-
-                                    <div> {lote.fechasiembra || '--'} </div>
-
-                                    <div> {Number(lote.cantidad_plantas || 0).toLocaleString()} </div>
-
-                                    <div>  {lote.area || 0} Ha </div>
-
-                                    <div>
-                                        <span className={`badge-estado ${lote.estado?.toLowerCase() === 'terminada' ? 'terminada' : 'pendiente'}`}>
-                                            {lote.estado || '—'}
-                                        </span>
-                                    </div>
-
-                                    <div>
-                                        <button
-                                            className="btn-ver-lote"
-                                            onClick={() =>
-                                                setLoteSeleccionado({
-                                                    id: lote.id,
-                                                    numero_lote: lote.numero_lote,
-                                                    uidcultivo: lote.uidcultivo,
-                                                    nombreCultivo: cultivo.nombre_comun,
-                                                    nombreCientifico: cultivo.nombre_cientifico,
-                                                    url_img: cultivo.url_img
-                                                })
-                                            }
-                                        >
-                                            Ver
-                                        </button>
-                                    </div>
-
+                                {/* Estado fenológico */}
+                                <div className="col-fenologico">
+                                    {lote.estadoFenologico || '--'}
                                 </div>
-                            ))}
 
-                            {/* Fila subtotal del cultivo */}
-                            <div className="fila-subtotal-tarjeta">
-                                <div className="txt-subtotal">Subtotal</div>
-                                <div></div>
-                                <div>{subtotalPlantas.toLocaleString()}</div>
-                                <div>{subtotalExtension} Ha</div>
-                                <div></div>
-                                <div></div>
+                                {/* Plantas encontradas */}
+                                <div className="col-plantas">
+                                    {lote.plantasencontradas || 0}
+                                </div>
+
+                                {/* Estado del lote */}
+                                <div className="col-estado">
+                                    <span className={`badge-estado-fito ${estaTerminado ? 'completado' : 'pendiente'}`}>
+                                        {estaTerminado ? '✓ Completado' : '⏳ Pendiente'}
+                                    </span>
+                                </div>
+
+                                {/* Progreso de plagas */}
+                                <div className="col-progreso">
+                                    {tieneConteos ? (
+                                        <div className="progreso-plagas-detalle">
+                                            <span className="porcentaje-riesgo">{porcentajeInfestacion}%</span>
+                                            <span className="detalles-plagas">
+                                                {conteosPlagas.length} plagas contadas
+                                            </span>
+                                        </div>
+                                    ) : (
+                                        <span className="sin-conteos">Sin conteos</span>
+                                    )}
+                                </div>
+
+                                {/* Botón acción */}
+                                <div className="col-accion">
+                                    <button
+                                        className={`btn-editar-lote ${estaTerminado ? 'completado' : 'activo'}`}
+                                        onClick={() => setLoteSeleccionado(lote)}
+                                    >
+                                        {estaTerminado ? '✓ Ver' : 'Editar'}
+                                    </button>
+                                </div>
+
                             </div>
 
                         </div>
+                    );
+                })
+            )}
+
+            {/* Botón de terminar inspección ──────────────────────────────────*/}
+            <div className="bloque-botones-finales">
+                {!todosLotesTerminados && (
+                    <div className="advertencia-terminar">
+                        <AlertCircle size={20} />
+                        <p>Complete todos los lotes ({lotesTerminados}/{lotesTotales}) para poder terminar la inspección</p>
                     </div>
-                );
-            })}
-
-            {/* Barra de total general */}
-            <div className="barra-total-general">
-                <div className="txt-izquierda">Total General</div>
-                <div></div>
-                <div></div>
-                <div>{totalPlantasGeneral.toLocaleString()} plantas</div>
-                <div>{totalExtensionGeneral} Ha</div>
-                <div></div>
-                <div></div>
+                )}
+                
+                <button
+                    className={`btn-final terminar-inspeccion ${todosLotesTerminados ? 'activo' : 'deshabilitado'}`}
+                    onClick={terminarInspeccion}
+                    disabled={!todosLotesTerminados || terminandoInspeccion}
+                >
+                    {terminandoInspeccion ? '⏳ Terminando...' : '✓ Terminar Inspección'}
+                </button>
             </div>
 
         </div>
