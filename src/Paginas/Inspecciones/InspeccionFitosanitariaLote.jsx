@@ -209,7 +209,7 @@ function InspeccionFitosanitariaLote({
 
                 {/* Bloque central: ID del lote + campos del formulario */}
                 <div className="bloque-central-cabecera">
-                    <h2 className="titulo-lote">Lote {lote.id?.substring(0, 8)}</h2>
+                    <h2 className="titulo-lote">Lote {lote.cultivo.nombre_comun?.substring(0, 8)}</h2>
 
                     <div className="campo-formulario-lote">
                         <label className="label-campo">Estado Fenológico:</label>

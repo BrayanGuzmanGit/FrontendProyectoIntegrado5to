@@ -230,6 +230,7 @@ function InspeccionFitosanitariaGeneral({ inspeccionCompleta, onVolver, onRefres
                     const tieneConteos = conteosPlagas.length > 0;
 
                     return (
+                        console.log(lote),
                         <div key={lote.id} className="tarjeta-lote-inspeccion">
 
                             {/* Información del lote */}
@@ -238,7 +239,7 @@ function InspeccionFitosanitariaGeneral({ inspeccionCompleta, onVolver, onRefres
                                 {/* Cultivo / Lote */}
                                 <div className="col-cultivo">
                                     <div className="lote-numero">
-                                        Lote {lote.id?.substring(0, 8)}
+                                        Lote {lote.cultivo.nombre_comun?.substring(0, 8)}
                                     </div>
                                     <div className="lote-detalle">
                                         {lote.estadoFenologico ? `Estado: ${lote.estadoFenologico}` : 'Sin detalles'}
