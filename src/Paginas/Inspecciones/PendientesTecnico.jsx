@@ -28,6 +28,7 @@ function InspeccionesPendientesTecnico(){
             });
             if (!respuesta.ok) throw new Error('No se pudieron cargar las inspecciones pendientes.');
             const data = await respuesta.json();
+            console.log('Respuesta del backend:', data.data);
             setInspecciones(data.data || data || []);
             setCargando(false);
         } catch (err) {
@@ -131,6 +132,8 @@ function InspeccionesPendientesTecnico(){
                     <tr>
                         <th>Fecha de realización</th>
                         <th>Lugar de producción</th>
+                        <th>direccion del lugar</th>
+                        <th>municipio del lugar</th>
                         <th>Tipo de Inspección</th>
                         <th>Productor del lugar</th>
                         <th>Estado</th>
@@ -139,11 +142,11 @@ function InspeccionesPendientesTecnico(){
                 </thead>
                 <tbody>
                     {cargando ? (
-                        <tr><td colSpan="6" style={{ textAlign: 'center', padding: '20px' }}>Cargando inspecciones pendientes...</td></tr>
+                        <tr><td colSpan="8" style={{ textAlign: 'center', padding: '20px' }}>Cargando inspecciones pendientes...</td></tr>
                     ) : error ? (
-                        <tr><td colSpan="6" style={{ textAlign: 'center', padding: '20px' }}>Error: {error}</td></tr>
+                        <tr><td colSpan="8" style={{ textAlign: 'center', padding: '20px' }}>Error: {error}</td></tr>
                     ) : solicitudesOrdenadas.length === 0 ? (   // ✅ usa la lista filtrada
-                        <tr><td colSpan="6" style={{ textAlign: 'center', padding: '20px' }}>No hay inspecciones que coincidan con los filtros.</td></tr>
+                        <tr><td colSpan="8" style={{ textAlign: 'center', padding: '20px' }}>No hay inspecciones que coincidan con los filtros.</td></tr>
                     ) : (
                         solicitudesOrdenadas.map((inspeccion) => {   // ✅ usa la lista filtrada
                             const tipo = inspeccion.solicitud_inspeccion?.tipo_inspeccion?.toLowerCase() || '';
@@ -155,7 +158,9 @@ function InspeccionesPendientesTecnico(){
                             return (
                                 <tr key={inspeccion.idinspeccion}>
                                     <td>{inspeccion.fechainicioinspeccion || '--'}</td>
-                                    <td>{inspeccion.lugarNombre || inspeccion.solicitud_inspeccion?.idlugarproduccion || '--'}</td>
+                                    <td>{inspeccion.lugarNombre || '--'}</td>
+                                    <td>{inspeccion.solicitud_inspeccion?.direccionLugar?.direccion || '--'}</td>
+                                    <td>{inspeccion.solicitud_inspeccion?.direccionLugar?.municipio || '--'}</td>
                                     <td>{inspeccion.solicitud_inspeccion?.tipo_inspeccion || '--'}</td>
                                     <td>{inspeccion.productorNombre || '--'}</td>
                                     <td className={`estado ${inspeccion.estado?.toLowerCase()}`}>
